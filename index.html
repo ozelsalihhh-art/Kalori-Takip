@@ -3,266 +3,279 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NutriTrack — Kalori Takip</title>
+<title>NutriTrack</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg:#0d0d0f;--bg2:#141418;--bg3:#1c1c22;--bg4:#242430;
-    --gold:#c9a84c;--teal:#4ecdc4;--red:#e05c5c;--green:#5ce08a;--orange:#e08a4e;
-    --text:#f0ede8;--text2:#a8a4a0;--text3:#6a6670;
-    --border:rgba(201,168,76,0.15);--border2:rgba(255,255,255,0.06);
-    --radius:16px;--radius-sm:10px;
-  }
-  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;max-width:430px;margin:0 auto;overflow-x:hidden;}
+:root{
+  --bg:#0d0d0f;--bg2:#141418;--bg3:#1c1c22;--bg4:#242430;
+  --gold:#c9a84c;--teal:#4ecdc4;--red:#e05c5c;--green:#5ce08a;--orange:#e08a4e;
+  --text:#f0ede8;--text2:#a8a4a0;--text3:#6a6670;
+  --border:reba(201,168,76,0.15);--border2:rgba(255,255,255,0.06);
+  --r:16px;--rs:10px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;max-width:430px;margin:0 auto;overflow-x:hidden;}
 
-  /* SPLASH */
-  #splash{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;}
-  #splash h1{font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:300;letter-spacing:4px;background:linear-gradient(135deg,var(--gold),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-  #splash p{color:var(--text3);font-size:0.85rem;letter-spacing:2px;text-transform:uppercase;}
-  .splash-ring{width:80px;height:80px;border-radius:50%;border:2px solid transparent;border-top-color:var(--gold);border-right-color:var(--teal);animation:spin 1s linear infinite;margin-bottom:8px;}
-  @keyframes spin{to{transform:rotate(360deg);}}
+/* SPLASH */
+#splash{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;}
+#splash h1{font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:300;letter-spacing:4px;background:linear-gradient(135deg,var(--gold),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+#splash p{color:var(--text3);font-size:0.85rem;letter-spacing:2px;text-transform:uppercase;}
+.splash-ring{width:80px;height:80px;border-radius:50%;border:2px solid transparent;border-top-color:var(--gold);border-right-color:var(--teal);animation:spin 1s linear infinite;margin-bottom:8px;}
+@keyframes spin{to{transform:rotate(360deg);}}
 
-  /* SETUP */
-  #setup{position:fixed;inset:0;z-index:999;background:var(--bg);overflow-y:auto;padding:24px 20px 40px;display:none;}
-  .setup-header{text-align:center;margin-bottom:32px;}
-  .setup-header h2{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:400;background:linear-gradient(135deg,var(--gold),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-  .setup-header p{color:var(--text2);font-size:0.85rem;margin-top:6px;}
-  .profile-tab{flex:1;padding:10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-family:'Outfit',sans-serif;font-size:0.85rem;cursor:pointer;transition:all 0.2s;text-align:center;}
-  .profile-tab.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.08);}
-  .add-profile-btn{padding:10px 16px;border-radius:var(--radius-sm);border:1px dashed var(--border);background:transparent;color:var(--text3);font-family:'Outfit',sans-serif;font-size:0.85rem;cursor:pointer;}
-  .form-group{margin-bottom:16px;}
-  .form-group label{display:block;font-size:0.78rem;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
-  .form-group input,.form-group select{width:100%;padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-family:'Outfit',sans-serif;font-size:0.95rem;outline:none;transition:border-color 0.2s;}
-  .form-group input:focus,.form-group select:focus{border-color:var(--gold);}
-  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-  .gender-btns{display:flex;gap:8px;}
-  .gender-btn{flex:1;padding:11px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg3);color:var(--text2);font-family:'Outfit',sans-serif;font-size:0.9rem;cursor:pointer;transition:all 0.2s;text-align:center;}
-  .gender-btn.active{border-color:var(--teal);color:var(--teal);background:rgba(78,205,196,0.08);}
-  .info-box{background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:var(--radius-sm);padding:14px;margin:16px 0;font-size:0.85rem;color:var(--text2);line-height:1.5;}
-  .info-box strong{color:var(--gold);}
-  .btn-primary{width:100%;padding:15px;border-radius:var(--radius);border:none;background:linear-gradient(135deg,var(--gold),#a07830);color:#0d0d0f;font-family:'Outfit',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;transition:opacity 0.2s;margin-top:8px;}
-  .btn-primary:active{opacity:0.85;}
+/* SETUP */
+#setup{position:fixed;inset:0;z-index:999;background:var(--bg);overflow-y:auto;padding:28px 20px 48px;display:none;}
+.setup-logo{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:400;background:linear-gradient(135deg,var(--gold),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center;margin-bottom:4px;}
+.setup-sub{color:var(--text3);font-size:0.8rem;text-align:center;margin-bottom:28px;}
+.form-group{margin-bottom:13px;}
+.form-group label{display:block;font-size:0.74rem;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
+.form-group input,.form-group select{width:100%;padding:11px 13px;border-radius:var(--rs);border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-family:'Outfit',sans-serif;font-size:0.93rem;outline:none;transition:border-color 0.2s;}
+.form-group input:focus,.form-group select:focus{border-color:var(--gold);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.gender-btns{display:flex;gap:8px;}
+.gender-btn{flex:1;padding:10px;border-radius:var(--rs);border:1px solid var(--border2);background:var(--bg3);color:var(--text2);font-family:'Outfit',sans-serif;font-size:0.88rem;cursor:pointer;transition:all 0.2s;text-align:center;}
+.gender-btn.active{border-color:var(--teal);color:var(--teal);background:rgba(78,205,196,0.08);}
+.tdee-preview{background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:var(--rs);padding:13px;margin:14px 0;font-size:0.83rem;color:var(--text2);line-height:1.6;display:none;}
+.tdee-preview strong{color:var(--gold);}
+.btn-primary{width:100%;padding:14px;border-radius:var(--r);border:none;background:linear-gradient(135deg,var(--gold),#a07830);color:#0d0d0f;font-family:'Outfit',sans-serif;font-size:0.98rem;font-weight:600;cursor:pointer;transition:opacity 0.2s;margin-top:4px;}
+.btn-primary:active{opacity:0.85;}
 
-  /* APP */
-  #app{display:none;padding-bottom:80px;}
-  .topbar{padding:20px 20px 0;display:flex;align-items:center;justify-content:space-between;}
-  .topbar-left h1{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:400;background:linear-gradient(135deg,var(--gold),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-  .topbar-left p{font-size:0.78rem;color:var(--text3);margin-top:1px;}
-  .profile-switcher{display:flex;gap:6px;}
-  .profile-pill{padding:6px 12px;border-radius:20px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);font-size:0.78rem;cursor:pointer;transition:all 0.2s;}
-  .profile-pill.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.1);}
-  .date-nav{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 0;}
-  .date-nav button{width:32px;height:32px;border-radius:50%;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-  .date-nav span{font-size:0.88rem;color:var(--text2);letter-spacing:0.5px;}
+/* APP */
+#app{display:none;padding-bottom:80px;}
+.topbar{padding:18px 18px 0;display:flex;align-items:center;justify-content:space-between;}
+.topbar-title{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:400;background:linear-gradient(135deg,var(--gold),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.topbar-name{font-size:0.78rem;color:var(--text3);margin-top:1px;}
+.topbar-btn{width:30px;height:30px;border-radius:50%;border:1px solid var(--border2);background:var(--bg3);color:var(--text3);font-size:0.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 
-  /* RING */
-  .ring-section{padding:20px 20px 0;display:flex;align-items:center;gap:20px;}
-  .ring-wrap{position:relative;width:130px;height:130px;flex-shrink:0;}
-  .ring-wrap svg{transform:rotate(-90deg);}
-  .ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-  .ring-center .kcal-num{font-size:1.5rem;font-weight:600;color:var(--text);line-height:1;}
-  .ring-center .kcal-label{font-size:0.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
-  .ring-stats{flex:1;}
-  .ring-stat{margin-bottom:11px;}
-  .ring-stat-label{font-size:0.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
-  .ring-stat-row{display:flex;align-items:center;gap:8px;}
-  .ring-stat-bar{flex:1;height:4px;background:var(--bg4);border-radius:2px;overflow:hidden;}
-  .ring-stat-fill{height:100%;border-radius:2px;transition:width 0.4s;}
-  .ring-stat-val{font-size:0.78rem;color:var(--text2);min-width:38px;text-align:right;}
+/* DATE NAV */
+.date-nav{display:flex;align-items:center;justify-content:space-between;padding:12px 18px 0;}
+.date-nav button{width:30px;height:30px;border-radius:50%;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.date-nav span{font-size:0.85rem;color:var(--text2);}
 
-  /* MACRO */
-  .macro-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:14px 20px 0;}
-  .macro-pill{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px;text-align:center;}
-  .macro-pill .m-val{font-size:1rem;font-weight:600;}
-  .macro-pill .m-label{font-size:0.66rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
-  .macro-pill .m-goal{font-size:0.66rem;color:var(--text3);margin-top:1px;}
+/* RING */
+.ring-section{padding:14px 18px 0;display:flex;align-items:center;gap:18px;}
+.ring-wrap{position:relative;width:120px;height:120px;flex-shrink:0;}
+.ring-wrap svg{transform:rotate(-90deg);}
+.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.ring-kcal{font-size:1.4rem;font-weight:600;line-height:1;}
+.ring-label{font-size:0.58rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+.ring-stats{flex:1;}
+.rstat{margin-bottom:10px;}
+.rstat-label{font-size:0.66rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
+.rstat-row{display:flex;align-items:center;gap:7px;}
+.rstat-bar{flex:1;height:4px;background:var(--bg4);border-radius:2px;overflow:hidden;}
+.rstat-fill{height:100%;border-radius:2px;transition:width 0.5s;}
+.rstat-val{font-size:0.74rem;color:var(--text2);min-width:34px;text-align:right;}
 
-  /* SU */
-  .water-section{margin:12px 20px 0;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;justify-content:space-between;}
-  .water-left{display:flex;align-items:center;gap:10px;}
-  .water-icon{font-size:1.3rem;}
-  .water-info .w-label{font-size:0.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;}
-  .water-info .w-val{font-size:1rem;font-weight:600;color:var(--teal);}
-  .water-btns{display:flex;gap:8px;}
-  .water-btn{width:30px;height:30px;border-radius:50%;border:1px solid rgba(78,205,196,0.3);background:rgba(78,205,196,0.08);color:var(--teal);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-  .water-glasses{display:flex;gap:3px;margin-top:5px;}
-  .water-glass{width:13px;height:13px;border-radius:3px;border:1.5px solid rgba(78,205,196,0.3);background:transparent;transition:background 0.2s;}
-  .water-glass.filled{background:var(--teal);border-color:var(--teal);}
+/* MACRO */
+.macro-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:11px 18px 0;}
+.mpill{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:9px 8px;text-align:center;}
+.mpill .mv{font-size:0.96rem;font-weight:600;}
+.mpill .ml{font-size:0.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+.mpill .mg{font-size:0.62rem;color:var(--text3);margin-top:1px;}
 
-  /* EGZERSİZ */
-  .exercise-section{margin:12px 20px 0;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 14px;}
-  .exercise-header{display:flex;align-items:center;justify-content:space-between;}
-  .exercise-header-left{display:flex;align-items:center;gap:10px;}
-  .exercise-icon{font-size:1.3rem;}
-  .exercise-label{font-size:0.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;}
-  .exercise-burned{font-size:1rem;font-weight:600;color:var(--green);}
-  .exercise-add-btn{width:30px;height:30px;border-radius:50%;border:1px solid rgba(92,224,138,0.3);background:rgba(92,224,138,0.08);color:var(--green);font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-  .exercise-list{margin-top:8px;}
-  .exercise-item{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border2);}
-  .exercise-item:last-child{border-bottom:none;padding-bottom:0;}
-  .exercise-item-name{font-size:0.88rem;color:var(--text);}
-  .exercise-item-detail{font-size:0.72rem;color:var(--text3);margin-top:1px;}
-  .exercise-item-right{display:flex;align-items:center;gap:10px;}
-  .exercise-item-kcal{font-size:0.88rem;color:var(--green);font-weight:500;}
-  .del-btn{width:22px;height:22px;border-radius:50%;border:1px solid rgba(224,92,92,0.3);background:rgba(224,92,92,0.08);color:var(--red);font-size:0.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+/* İÇECEKLER */
+.drinks-section{margin:11px 18px 0;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:12px 14px;}
+.drinks-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.drinks-title{font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;}
+.drinks-total-kcal{font-size:0.73rem;color:var(--text2);}
+.drinks-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
+.drink-item{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rs);padding:8px 5px;text-align:center;}
+.drink-icon{font-size:1.2rem;margin-bottom:2px;}
+.drink-name{font-size:0.6rem;color:var(--text3);margin-bottom:4px;line-height:1.2;}
+.drink-count{font-size:0.95rem;font-weight:600;margin-bottom:4px;}
+.drink-btns{display:flex;gap:3px;justify-content:center;}
+.drink-btn{width:20px;height:20px;border-radius:50%;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);font-size:0.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.drink-btn.minus{color:var(--red);border-color:rgba(224,92,92,0.3);}
+.drink-btn.plus{color:var(--teal);border-color:rgba(78,205,196,0.3);}
 
-  /* MEALS */
-  .meals-section{padding:14px 20px 0;}
-  .section-title{font-size:0.76rem;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;display:block;}
-  .meal-group{margin-bottom:10px;}
-  .meal-group-header{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm) var(--radius-sm) 0 0;}
-  .meal-group-name{font-size:0.84rem;font-weight:500;color:var(--text);}
-  .meal-group-kcal{font-size:0.78rem;color:var(--gold);}
-  .meal-items{background:var(--bg2);border:1px solid var(--border2);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);overflow:hidden;}
-  .meal-item{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-bottom:1px solid var(--border2);animation:fadeIn 0.2s;}
-  .meal-item:last-child{border-bottom:none;}
-  @keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
-  .meal-item-name{font-size:0.86rem;color:var(--text);}
-  .meal-item-detail{font-size:0.72rem;color:var(--text3);margin-top:1px;}
-  .meal-item-right{display:flex;align-items:center;gap:9px;}
-  .meal-item-kcal{font-size:0.86rem;color:var(--gold);font-weight:500;}
-  .meal-add-row{padding:7px 12px;display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--text3);font-size:0.78rem;background:var(--bg2);border:1px solid var(--border2);border-top:1px dashed var(--border2);border-radius:0 0 var(--radius-sm) var(--radius-sm);transition:color 0.2s;}
-  .meal-add-row:active{color:var(--gold);}
+/* EGZERSİZ */
+.exercise-section{margin:11px 18px 0;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:12px 14px;}
+.ex-header{display:flex;align-items:center;justify-content:space-between;}
+.ex-left{display:flex;align-items:center;gap:9px;}
+.ex-label{font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;}
+.ex-burned{font-size:0.98rem;font-weight:600;color:var(--green);}
+.icon-btn{width:28px;height:28px;border-radius:50%;border:1px solid;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;}
+.icon-btn-green{border-color:rgba(92,224,138,0.3);background:rgba(92,224,138,0.08);color:var(--green);}
+.ex-list{margin-top:8px;}
+.ex-item{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border2);}
+.ex-item:last-child{border-bottom:none;padding-bottom:0;}
+.ex-item-name{font-size:0.84rem;}
+.ex-item-kcal{font-size:0.84rem;color:var(--green);font-weight:500;}
+.item-actions{display:flex;gap:5px;}
+.edit-btn{width:22px;height:22px;border-radius:50%;border:1px solid rgba(78,205,196,0.3);background:rgba(78,205,196,0.08);color:var(--teal);font-size:0.68rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.del-btn{width:22px;height:22px;border-radius:50%;border:1px solid rgba(224,92,92,0.3);background:rgba(224,92,92,0.08);color:var(--red);font-size:0.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 
-  /* NAV */
-  .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(20,20,24,0.96);backdrop-filter:blur(12px);border-top:1px solid var(--border2);display:flex;padding:10px 0 16px;z-index:100;}
-  .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0;}
-  .nav-icon{font-size:1.25rem;transition:transform 0.2s;}
-  .nav-label{font-size:0.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;}
-  .nav-item.active .nav-label{color:var(--gold);}
-  .nav-item.active .nav-icon{transform:scale(1.15);}
+/* MEALS */
+.meals-section{padding:12px 18px 0;}
+.section-title{font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:9px;display:block;}
+.meal-group{margin-bottom:9px;}
+.meal-group-header{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs) var(--rs) 0 0;}
+.meal-group-name{font-size:0.82rem;font-weight:500;}
+.meal-group-kcal{font-size:0.76rem;color:var(--gold);}
+.meal-items{background:var(--bg2);border:1px solid var(--border2);border-top:none;border-radius:0 0 var(--rs) var(--rs);overflow:hidden;}
+.meal-item{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--border2);animation:fadeIn 0.2s;}
+.meal-item:last-child{border-bottom:none;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.meal-item-name{font-size:0.83rem;}
+.meal-item-detail{font-size:0.69rem;color:var(--text3);margin-top:1px;}
+.meal-item-right{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.meal-item-kcal{font-size:0.83rem;color:var(--gold);font-weight:500;}
+.meal-add-row{padding:8px 12px;display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--text3);font-size:0.76rem;background:var(--bg2);border:1px solid var(--border2);border-top:1px dashed var(--border2);border-radius:0 0 var(--rs) var(--rs);transition:color 0.15s;justify-content:center;}
+.meal-add-row:active{color:var(--gold);}
 
-  .page{display:none;}.page.active{display:block;}
+/* NAV */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(20,20,24,0.96);backdrop-filter:blur(12px);border-top:1px solid var(--border2);display:flex;padding:10px 0 16px;z-index:100;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0;}
+.nav-icon{font-size:1.2rem;transition:transform 0.2s;}
+.nav-label{font-size:0.58rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;}
+.nav-item.active .nav-label{color:var(--gold);}
+.nav-item.active .nav-icon{transform:scale(1.15);}
+.page{display:none;}.page.active{display:block;}
 
-  /* WEEKLY */
-  .weekly-header{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:400;background:linear-gradient(135deg,var(--gold),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:18px;}
-  .chart-card{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:16px;margin-bottom:14px;}
-  .chart-title{font-size:0.73rem;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px;}
-  .bar-chart{display:flex;align-items:flex-end;gap:6px;height:80px;}
-  .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;}
-  .bar{width:100%;border-radius:4px 4px 0 0;transition:height 0.5s;min-height:4px;}
-  .bar-day{font-size:0.6rem;color:var(--text3);}
-  .bar-val{font-size:0.58rem;color:var(--text2);}
-  .weight-add-row{display:flex;gap:8px;margin-bottom:12px;}
-  .weight-add-row input{flex:1;padding:10px 14px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-family:'Outfit',sans-serif;font-size:0.95rem;outline:none;}
-  .weight-add-row input:focus{border-color:var(--teal);}
-  .btn-teal{padding:10px 16px;border-radius:var(--radius-sm);border:none;background:linear-gradient(135deg,var(--teal),#3aada5);color:#0d0d0f;font-family:'Outfit',sans-serif;font-weight:600;font-size:0.9rem;cursor:pointer;}
-  .weight-entry{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);margin-bottom:8px;}
-  .weight-entry-date{font-size:0.78rem;color:var(--text3);}
-  .weight-entry-val{font-size:1rem;font-weight:600;color:var(--teal);}
+/* PAGES */
+.page-pad{padding:18px;}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:400;background:linear-gradient(135deg,var(--gold),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:16px;}
 
-  /* PROFILE PAGE */
-  .profile-header{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:400;background:linear-gradient(135deg,var(--gold),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:18px;}
-  .profile-card{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:18px;margin-bottom:14px;}
-  .profile-card-name{font-size:1.05rem;font-weight:600;color:var(--text);margin-bottom:4px;}
-  .profile-card-sub{font-size:0.78rem;color:var(--text3);margin-bottom:14px;}
-  .profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-  .profile-stat{text-align:center;}
-  .profile-stat-val{font-size:1.05rem;font-weight:600;color:var(--gold);}
-  .profile-stat-label{font-size:0.64rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+/* WEEKLY */
+.chart-card{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:15px;margin-bottom:13px;}
+.chart-title{font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:11px;}
+.bar-chart{display:flex;align-items:flex-end;gap:5px;height:76px;}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;height:100%;justify-content:flex-end;}
+.bar{width:100%;border-radius:4px 4px 0 0;transition:height 0.5s;min-height:4px;}
+.bar-day{font-size:0.58rem;color:var(--text3);}
+.bar-val{font-size:0.56rem;color:var(--text2);}
+.weight-add-row{display:flex;gap:8px;margin-bottom:11px;}
+.weight-add-row input{flex:1;padding:10px 13px;border-radius:var(--rs);border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-family:'Outfit',sans-serif;font-size:0.93rem;outline:none;}
+.weight-add-row input:focus{border-color:var(--teal);}
+.btn-teal{padding:10px 15px;border-radius:var(--rs);border:none;background:linear-gradient(135deg,var(--teal),#3aada5);color:#0d0d0f;font-family:'Outfit',sans-serif;font-weight:600;font-size:0.88rem;cursor:pointer;}
+.weight-entry{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);margin-bottom:7px;}
+.weight-entry-date{font-size:0.76rem;color:var(--text3);}
+.weight-entry-val{font-size:0.96rem;font-weight:600;color:var(--teal);}
 
-  /* MODALS */
-  .modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);display:none;align-items:flex-end;}
-  .modal-overlay.open{display:flex;}
-  .modal{width:100%;max-width:430px;margin:0 auto;background:var(--bg2);border-radius:24px 24px 0 0;border:1px solid var(--border2);border-bottom:none;padding:20px;animation:slideUp 0.3s ease;max-height:88vh;overflow-y:auto;}
-  @keyframes slideUp{from{transform:translateY(100%)}to{transform:none}}
-  .modal-handle{width:40px;height:4px;border-radius:2px;background:var(--bg4);margin:0 auto 18px;}
-  .modal-title{font-size:1rem;font-weight:600;color:var(--text);margin-bottom:14px;}
-  .tab-row{display:flex;gap:8px;margin-bottom:12px;}
-  .tab-btn{flex:1;padding:8px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg3);color:var(--text2);font-family:'Outfit',sans-serif;font-size:0.8rem;cursor:pointer;transition:all 0.2s;text-align:center;}
-  .tab-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.08);}
-  .search-box{display:flex;align-items:center;gap:10px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:8px;}
-  .search-box input{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:'Outfit',sans-serif;font-size:0.95rem;}
-  .search-box input::placeholder{color:var(--text3);}
+/* PROFILE */
+.profile-card{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:17px;margin-bottom:13px;}
+.profile-card-name{font-size:1rem;font-weight:600;margin-bottom:3px;}
+.profile-card-sub{font-size:0.76rem;color:var(--text3);margin-bottom:13px;}
+.profile-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
+.pstat{text-align:center;}
+.pstat-val{font-size:0.98rem;font-weight:600;color:var(--gold);}
+.pstat-label{font-size:0.61rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+.history-section{margin-top:14px;}
+.history-title{font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:9px;}
+.history-item{display:flex;align-items:center;justify-content:space-between;padding:9px 13px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);margin-bottom:6px;}
+.history-item-name{font-size:0.84rem;}
+.history-item-kcal{font-size:0.78rem;color:var(--gold);}
+.history-empty{font-size:0.82rem;color:var(--text3);text-align:center;padding:16px;}
 
-  /* FOOD LIST */
-  .food-list{max-height:210px;overflow-y:auto;margin-bottom:8px;}
-  .food-item{display:flex;align-items:center;justify-content:space-between;padding:8px 6px;border-bottom:1px solid var(--border2);cursor:pointer;border-radius:6px;transition:background 0.1s;}
-  .food-item:active{background:var(--bg3);}
-  .food-item-name{font-size:0.87rem;color:var(--text);}
-  .food-item-sub{font-size:0.68rem;color:var(--text3);margin-top:1px;}
-  .food-item-right{text-align:right;flex-shrink:0;margin-left:8px;}
-  .food-item-cal{font-size:0.8rem;color:var(--gold);white-space:nowrap;}
-  .food-item-hint{font-size:0.66rem;color:var(--text3);}
+/* MODALS */
+.modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.78);backdrop-filter:blur(5px);display:none;align-items:flex-end;}
+.modal-overlay.open{display:flex;}
+.modal{width:100%;max-width:430px;margin:0 auto;background:var(--bg2);border-radius:22px 22px 0 0;border:1px solid var(--border2);border-bottom:none;padding:18px;animation:slideUp 0.28s ease;max-height:90vh;overflow-y:auto;}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:none}}
+.modal-handle{width:36px;height:4px;border-radius:2px;background:var(--bg4);margin:0 auto 16px;}
+.modal-title{font-size:0.96rem;font-weight:600;margin-bottom:13px;}
+.btn-cancel{width:100%;padding:10px;background:none;border:none;color:var(--text3);font-family:'Outfit',sans-serif;font-size:0.87rem;cursor:pointer;margin-top:4px;}
 
-  /* SELECTED FOOD PREVIEW */
-  .sel-preview{background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:var(--radius-sm);padding:12px;margin-bottom:8px;display:none;}
-  .sel-preview.show{display:block;}
-  .sp-name{font-size:0.88rem;color:var(--text);font-weight:500;margin-bottom:8px;}
-  .sp-inputs{display:flex;gap:8px;margin-bottom:6px;}
-  .sp-inputs input{flex:1;padding:9px 10px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-family:'Outfit',sans-serif;font-size:0.95rem;outline:none;}
-  .sp-inputs input:focus{border-color:var(--gold);}
-  .sp-inputs select{flex:1.4;padding:9px 8px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-family:'Outfit',sans-serif;font-size:0.82rem;outline:none;}
-  .sp-inputs select:focus{border-color:var(--gold);}
-  .sp-result{font-size:1.3rem;font-weight:600;color:var(--gold);}
-  .sp-macros{font-size:0.71rem;color:var(--text3);margin-top:2px;}
+/* AI MODAL */
+.ai-prompt-hint{font-size:0.74rem;color:var(--text3);margin-bottom:8px;line-height:1.5;}
+.ai-prompt-hint em{color:var(--text2);font-style:normal;}
+.ai-prompt-area{width:100%;min-height:80px;padding:12px 13px;border-radius:var(--rs);border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-family:'Outfit',sans-serif;font-size:0.93rem;outline:none;resize:none;line-height:1.5;transition:border-color 0.2s;}
+.ai-prompt-area:focus{border-color:var(--gold);}
+.quick-picks{margin-bottom:11px;}
+.quick-picks-title{font-size:0.66rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;}
+.quick-pick-chips{display:flex;flex-wrap:wrap;gap:5px;}
+.qchip{padding:5px 10px;border-radius:20px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);font-size:0.74rem;cursor:pointer;transition:all 0.15s;white-space:nowrap;}
+.qchip:active{border-color:var(--gold);color:var(--gold);}
+.ai-loading{display:none;flex-direction:column;align-items:center;padding:24px 0;gap:12px;}
+.ai-loading.show{display:flex;}
+.ai-spinner{width:40px;height:40px;border-radius:50%;border:2px solid transparent;border-top-color:var(--gold);border-right-color:var(--teal);animation:spin 0.9s linear infinite;}
+.ai-loading-text{font-size:0.83rem;color:var(--text3);}
+.ai-result-items{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);overflow:hidden;margin-bottom:10px;}
+.ai-result-item{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-bottom:1px solid var(--border2);}
+.ai-result-item:last-child{border-bottom:none;}
+.ai-result-name{font-size:0.85rem;}
+.ai-result-kcal{font-size:0.82rem;color:var(--gold);font-weight:500;}
+.ai-result-total{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:var(--rs);margin-bottom:10px;}
+.ai-result-total-label{font-size:0.8rem;color:var(--text2);}
+.ai-result-total-kcal{font-size:1.2rem;font-weight:600;color:var(--gold);}
+.btn-confirm{width:100%;padding:13px;border-radius:var(--r);border:none;background:linear-gradient(135deg,var(--gold),#a07830);color:#0d0d0f;font-family:'Outfit',sans-serif;font-size:0.96rem;font-weight:600;cursor:pointer;}
+.btn-rewrite{width:100%;padding:10px;border-radius:var(--r);border:1px solid var(--border2);background:transparent;color:var(--text2);font-family:'Outfit',sans-serif;font-size:0.87rem;cursor:pointer;margin-top:6px;}
 
-  /* MANUAL */
-  .manual-sect{display:none;}
-  .manual-sect.show{display:block;}
-  .manual-hint{font-size:0.78rem;color:var(--text3);margin-bottom:10px;line-height:1.5;padding:8px 10px;background:var(--bg3);border-radius:var(--radius-sm);}
-  .manual-top{display:flex;gap:8px;margin-bottom:10px;}
-  .manual-top input{padding:11px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-family:'Outfit',sans-serif;font-size:0.92rem;outline:none;}
-  .manual-top input:focus{border-color:var(--gold);}
-  .manual-name{flex:2;}
-  .manual-kcal{flex:1;border-color:rgba(201,168,76,0.3)!important;background:rgba(201,168,76,0.05)!important;color:var(--gold)!important;font-weight:600!important;text-align:center;}
-  .macro-toggle{font-size:0.76rem;color:var(--text3);cursor:pointer;margin-bottom:8px;display:flex;align-items:center;gap:5px;}
-  .macro-toggle .arrow{color:var(--teal);font-size:0.7rem;}
-  .macro-opt{display:none;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px;}
-  .macro-opt.show{display:grid;}
-  .macro-opt-item input{width:100%;padding:8px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-family:'Outfit',sans-serif;font-size:0.85rem;outline:none;text-align:center;}
-  .macro-opt-item label{display:block;font-size:0.64rem;color:var(--text3);text-align:center;margin-top:3px;}
+/* EXERCISE MODAL */
+.ex-hint{font-size:0.76rem;color:var(--text2);margin-bottom:10px;padding:9px 11px;background:rgba(92,224,138,0.05);border:1px solid rgba(92,224,138,0.15);border-radius:var(--rs);line-height:1.5;}
+.ex-manual-row{display:flex;gap:7px;margin-bottom:8px;}
+.ex-manual-row input{padding:11px 12px;border-radius:var(--rs);border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-family:'Outfit',sans-serif;font-size:0.9rem;outline:none;}
+.ex-manual-row input:focus{border-color:var(--green);}
+.ex-name-input{flex:2;}
+.ex-kcal-input{flex:1;border-color:rgba(92,224,138,0.3)!important;background:rgba(92,224,138,0.05)!important;color:var(--green)!important;font-weight:600!important;text-align:center;}
+.btn-green{width:100%;padding:13px;border-radius:var(--r);border:none;background:linear-gradient(135deg,var(--green),#3aad62);color:#0d0d0f;font-family:'Outfit',sans-serif;font-size:0.96rem;font-weight:600;cursor:pointer;margin-top:4px;}
 
-  /* EXERCISE MODAL */
-  .ex-db{max-height:200px;overflow-y:auto;margin-bottom:8px;}
-  .ex-db-item{display:flex;align-items:center;justify-content:space-between;padding:8px 6px;border-bottom:1px solid var(--border2);cursor:pointer;border-radius:6px;transition:background 0.1s;}
-  .ex-db-item:active{background:var(--bg3);}
-  .ex-db-name{font-size:0.88rem;color:var(--text);}
-  .ex-db-cal{font-size:0.78rem;color:var(--green);}
-  .ex-selected{background:rgba(92,224,138,0.06);border:1px solid rgba(92,224,138,0.2);border-radius:var(--radius-sm);padding:12px;margin-bottom:8px;display:none;}
-  .ex-selected.show{display:block;}
-  .ex-sel-name{font-size:0.9rem;font-weight:500;color:var(--text);margin-bottom:8px;}
-  .ex-dur-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
-  .ex-dur-row input{width:80px;padding:9px 10px;border-radius:var(--radius-sm);border:1px solid rgba(92,224,138,0.3);background:rgba(92,224,138,0.05);color:var(--green);font-family:'Outfit',sans-serif;font-size:1rem;font-weight:600;outline:none;text-align:center;}
-  .ex-dur-row span{color:var(--text3);font-size:0.85rem;}
-  .ex-result{font-size:1.3rem;font-weight:600;color:var(--green);}
-  .ex-note{font-size:0.7rem;color:var(--text3);margin-top:2px;}
-  .btn-green{width:100%;padding:14px;border-radius:var(--radius);border:none;background:linear-gradient(135deg,var(--green),#3aad62);color:#0d0d0f;font-family:'Outfit',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;margin-top:4px;}
-  .btn-cancel{width:100%;padding:11px;background:none;border:none;color:var(--text3);font-family:'Outfit',sans-serif;font-size:0.9rem;cursor:pointer;margin-top:4px;}
+/* EDIT MODAL */
+.edit-field{margin-bottom:11px;}
+.edit-field label{display:block;font-size:0.72rem;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
+.edit-field input{width:100%;padding:11px 13px;border-radius:var(--rs);border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-family:'Outfit',sans-serif;font-size:0.93rem;outline:none;}
+.edit-field input:focus{border-color:var(--gold);}
 
-  /* TOAST */
-  .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:10px 20px;font-size:0.85rem;color:var(--text);z-index:9999;transition:transform 0.3s;white-space:nowrap;}
-  .toast.show{transform:translateX(-50%) translateY(0);}
-  ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+/* PROFILE MODAL */
+.pe-field{margin-bottom:12px;}
+.pe-field label{display:block;font-size:0.72rem;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
+.pe-field input,.pe-field select{width:100%;padding:11px 13px;border-radius:var(--rs);border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-family:'Outfit',sans-serif;font-size:0.93rem;outline:none;}
+.pe-field input:focus,.pe-field select:focus{border-color:var(--gold);}
+
+/* TOAST */
+.toast{position:fixed;top:18px;left:50%;transform:translateX(-50%) translateY(-70px);background:var(--bg3);border:1px solid var(--border);border-radius:18px;padding:9px 18px;font-size:0.82rem;color:var(--text);z-index:9999;transition:transform 0.28s;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
 </style>
 </head>
 <body>
 
+<!-- SPLASH -->
 <div id="splash">
   <div class="splash-ring"></div>
   <h1>NutriTrack</h1>
   <p>Kalori & Beslenme Takibi</p>
 </div>
 
+<!-- SETUP -->
 <div id="setup">
-  <div class="setup-header"><h2>Hoş Geldiniz</h2><p>Profilleri oluşturalım</p></div>
-  <div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;" id="profileTabsSetup">
-    <div class="profile-tab active" onclick="switchSetupProfile(0)">Profil 1</div>
-    <button class="add-profile-btn" onclick="addProfileSetup()">+ Ekle</button>
+  <div class="setup-logo">NutriTrack</div>
+  <div class="setup-sub">Profilini oluştur, başlayalım</div>
+  <div class="form-group"><label>İsim</label><input type="text" id="sName" placeholder="Adın"></div>
+  <div class="form-group"><label>Cinsiyet</label>
+    <div class="gender-btns">
+      <div class="gender-btn active" id="gM" onclick="setGender('M')">👨 Erkek</div>
+      <div class="gender-btn" id="gF" onclick="setGender('F')">👩 Kadın</div>
+    </div>
   </div>
-  <div id="setupForms"></div>
-  <div class="info-box" id="tdeePreview" style="display:none;">
-    Hedef: <strong id="tdeeVal">—</strong> kcal/gün
-    <span style="font-size:0.72rem;opacity:0.65;display:block;margin-top:2px;">TDEE − 750 kcal açık · Mifflin-St Jeor</span>
+  <div class="form-row">
+    <div class="form-group"><label>Yaş</label><input type="number" id="sAge" placeholder="30" oninput="previewTDEE()"></div>
+    <div class="form-group"><label>Boy (cm)</label><input type="number" id="sHeight" placeholder="175" oninput="previewTDEE()"></div>
   </div>
+  <div class="form-row">
+    <div class="form-group"><label>Kilo (kg)</label><input type="number" id="sWeight" placeholder="75" step="0.1" oninput="previewTDEE()"></div>
+    <div class="form-group"><label>Aktivite</label>
+      <select id="sActivity" onchange="previewTDEE()">
+        <option value="sedentary">Hareketsiz</option>
+        <option value="light" selected>Hafif Aktif</option>
+        <option value="moderate">Orta Aktif</option>
+        <option value="active">Çok Aktif</option>
+      </select>
+    </div>
+  </div>
+  <div class="tdee-preview" id="tdeePreview">Hedef: <strong id="tdeeVal">—</strong> kcal/gün<span style="font-size:0.7rem;opacity:0.65;display:block;margin-top:1px;">TDEE − 750 kcal · Mifflin-St Jeor</span></div>
   <button class="btn-primary" onclick="saveSetup()">Başla 🚀</button>
 </div>
 
+<!-- APP -->
 <div id="app">
   <div class="topbar">
-    <div class="topbar-left"><h1>NutriTrack</h1><p id="topbarSub">—</p></div>
-    <div class="profile-switcher" id="profileSwitcher"></div>
+    <div>
+      <div class="topbar-title">NutriTrack</div>
+      <div class="topbar-name" id="topbarName">—</div>
+    </div>
+    <button class="topbar-btn" onclick="openModal('profileModal')">⚙️</button>
   </div>
 
   <div id="page-daily" class="page active">
@@ -274,77 +287,61 @@
 
     <div class="ring-section">
       <div class="ring-wrap">
-        <svg width="130" height="130" viewBox="0 0 130 130">
-          <circle cx="65" cy="65" r="54" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="10"/>
-          <circle id="ringFill" cx="65" cy="65" r="54" fill="none" stroke="url(#rg)" stroke-width="10"
-            stroke-linecap="round" stroke-dasharray="339.3" stroke-dashoffset="339.3" style="transition:stroke-dashoffset 0.6s;"/>
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="10"/>
+          <circle id="ringFill" cx="60" cy="60" r="50" fill="none" stroke="url(#rg)" stroke-width="10"
+            stroke-linecap="round" stroke-dasharray="314.2" stroke-dashoffset="314.2" style="transition:stroke-dashoffset 0.6s;"/>
           <defs><linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stop-color="#c9a84c"/><stop offset="100%" stop-color="#4ecdc4"/>
           </linearGradient></defs>
         </svg>
         <div class="ring-center">
-          <div class="kcal-num" id="ringKcal">0</div>
-          <div class="kcal-label">yenen kcal</div>
+          <div class="ring-kcal" id="ringKcal">0</div>
+          <div class="ring-label">yenen kcal</div>
         </div>
       </div>
       <div class="ring-stats">
-        <div class="ring-stat">
-          <div class="ring-stat-label">Hedef</div>
-          <div class="ring-stat-row">
-            <div class="ring-stat-bar"><div class="ring-stat-fill" style="width:100%;background:var(--gold);opacity:0.25"></div></div>
-            <div class="ring-stat-val" id="statGoal">—</div>
-          </div>
+        <div class="rstat">
+          <div class="rstat-label">Hedef</div>
+          <div class="rstat-row"><div class="rstat-bar"><div class="rstat-fill" style="width:100%;background:var(--gold);opacity:0.22"></div></div><div class="rstat-val" id="statGoal">—</div></div>
         </div>
-        <div class="ring-stat">
-          <div class="ring-stat-label">🔥 Yakılan</div>
-          <div class="ring-stat-row">
-            <div class="ring-stat-bar"><div class="ring-stat-fill" id="barBurned" style="width:0%;background:var(--green);"></div></div>
-            <div class="ring-stat-val" id="statBurned" style="color:var(--green)">0</div>
-          </div>
+        <div class="rstat">
+          <div class="rstat-label">🔥 Yakılan</div>
+          <div class="rstat-row"><div class="rstat-bar"><div class="rstat-fill" id="barBurned" style="width:0%;background:var(--green);"></div></div><div class="rstat-val" id="statBurned" style="color:var(--green)">0</div></div>
         </div>
-        <div class="ring-stat">
-          <div class="ring-stat-label">Net Kalan</div>
-          <div class="ring-stat-row">
-            <div class="ring-stat-bar"><div class="ring-stat-fill" id="barRemaining" style="width:100%;background:var(--teal);"></div></div>
-            <div class="ring-stat-val" id="statRemaining">—</div>
-          </div>
+        <div class="rstat">
+          <div class="rstat-label">Net Kalan</div>
+          <div class="rstat-row"><div class="rstat-bar"><div class="rstat-fill" id="barRemaining" style="width:100%;background:var(--teal);"></div></div><div class="rstat-val" id="statRemaining">—</div></div>
         </div>
       </div>
     </div>
 
     <div class="macro-row">
-      <div class="macro-pill"><div class="m-val" id="macroP" style="color:var(--teal)">0g</div><div class="m-label">Protein</div><div class="m-goal" id="macroGP">/ —g</div></div>
-      <div class="macro-pill"><div class="m-val" id="macroC" style="color:var(--gold)">0g</div><div class="m-label">Karb</div><div class="m-goal" id="macroGC">/ —g</div></div>
-      <div class="macro-pill"><div class="m-val" id="macroF" style="color:var(--orange)">0g</div><div class="m-label">Yağ</div><div class="m-goal" id="macroGF">/ —g</div></div>
+      <div class="mpill"><div class="mv" id="macroP" style="color:var(--teal)">0g</div><div class="ml">Protein</div><div class="mg" id="macroGP">/ —g</div></div>
+      <div class="mpill"><div class="mv" id="macroC" style="color:var(--gold)">0g</div><div class="ml">Karb</div><div class="mg" id="macroGC">/ —g</div></div>
+      <div class="mpill"><div class="mv" id="macroF" style="color:var(--orange)">0g</div><div class="ml">Yağ</div><div class="mg" id="macroGF">/ —g</div></div>
     </div>
 
-    <div class="water-section">
-      <div class="water-left">
-        <div class="water-icon">💧</div>
-        <div class="water-info">
-          <div class="w-label">Su Tüketimi</div>
-          <div class="w-val" id="waterVal">0 / 8 bardak</div>
-          <div class="water-glasses" id="waterGlasses"></div>
-        </div>
+    <div class="drinks-section">
+      <div class="drinks-header">
+        <span class="drinks-title">İçecekler</span>
+        <span class="drinks-total-kcal" id="drinksKcal"></span>
       </div>
-      <div class="water-btns">
-        <button class="water-btn" onclick="changeWater(-1)">−</button>
-        <button class="water-btn" onclick="changeWater(1)">+</button>
-      </div>
+      <div class="drinks-grid" id="drinksGrid"></div>
     </div>
 
     <div class="exercise-section">
-      <div class="exercise-header">
-        <div class="exercise-header-left">
-          <div class="exercise-icon">🏃</div>
+      <div class="ex-header">
+        <div class="ex-left">
+          <div style="font-size:1.25rem">🏃</div>
           <div>
-            <div class="exercise-label">Egzersiz</div>
-            <div class="exercise-burned" id="exerciseBurned">0 kcal yakıldı</div>
+            <div class="ex-label">Egzersiz</div>
+            <div class="ex-burned" id="exBurned">0 kcal yakıldı</div>
           </div>
         </div>
-        <button class="exercise-add-btn" onclick="openExerciseModal()">+</button>
+        <button class="icon-btn icon-btn-green" onclick="openExModal()">+</button>
       </div>
-      <div class="exercise-list" id="exerciseList"></div>
+      <div class="ex-list" id="exList"></div>
     </div>
 
     <div class="meals-section">
@@ -354,11 +351,11 @@
   </div>
 
   <div id="page-weekly" class="page">
-    <div style="padding:20px;">
-      <div class="weekly-header">Haftalık Özet</div>
+    <div class="page-pad">
+      <div class="page-title">Haftalık Özet</div>
       <div class="chart-card">
         <div class="chart-title">7 Günlük Net Kalori</div>
-        <div class="bar-chart" id="weeklyCalChart"></div>
+        <div class="bar-chart" id="weeklyChart"></div>
       </div>
       <div class="chart-card">
         <div class="chart-title">Kilo Takibi</div>
@@ -372,10 +369,13 @@
   </div>
 
   <div id="page-profile" class="page">
-    <div style="padding:20px;">
-      <div class="profile-header">Profiller</div>
-      <div id="profileCards"></div>
-      <button class="btn-primary" style="margin-top:4px;" onclick="openSetupForEdit()">Profil Düzenle</button>
+    <div class="page-pad">
+      <div class="page-title">Profil</div>
+      <div id="profileCard"></div>
+      <div class="history-section">
+        <div class="history-title">Yemek Geçmişi</div>
+        <div id="historyList"></div>
+      </div>
     </div>
   </div>
 
@@ -386,262 +386,133 @@
   </div>
 </div>
 
-<!-- YEMEK MODAL -->
-<div class="modal-overlay" id="foodModal" onclick="overlayClose(event,'foodModal')">
+<!-- AI MODAL -->
+<div class="modal-overlay" id="aiModal" onclick="ovClose(event,'aiModal')">
   <div class="modal">
     <div class="modal-handle"></div>
-    <div class="modal-title" id="modalFoodTitle">Yemek Ekle</div>
-    <div class="tab-row">
-      <button class="tab-btn active" id="tabBtnDB" onclick="switchFoodTab('db')">🔍 Veritabanı</button>
-      <button class="tab-btn" id="tabBtnManual" onclick="switchFoodTab('manual')">✏️ Manuel</button>
-    </div>
-
-    <div id="tabDB">
-      <div class="search-box">
-        <span style="color:var(--text3)">🔍</span>
-        <input type="text" id="foodSearch" placeholder="Yemek ara… simit, tavuk, elma" oninput="filterFoods()" autocomplete="off">
+    <div class="modal-title" id="aiModalTitle">Yemek Ekle</div>
+    <div id="aiPromptScreen">
+      <p class="ai-prompt-hint">Ne yedin? Doğal dille yaz — AI kaloriyi hesaplasın.<br>
+      <em>örn: 2 yumurta, 1 dilim ekmek, bir bardak çay</em></p>
+      <div class="quick-picks" id="quickPicks" style="display:none;">
+        <div class="quick-picks-title">Sık kullandıkların</div>
+        <div class="quick-pick-chips" id="quickChips"></div>
       </div>
-      <div class="food-list" id="foodList"></div>
-      <div class="sel-preview" id="selPreview">
-        <div class="sp-name" id="spName"></div>
-        <div class="sp-inputs">
-          <input type="number" id="amountInput" value="1" oninput="updateFoodPreview()" placeholder="Miktar">
-          <select id="unitSelect" onchange="updateFoodPreview()">
-            <option value="adet">adet</option>
-            <option value="g">gram</option>
-            <option value="ml">ml</option>
-            <option value="kase">kase (~200g)</option>
-            <option value="tabak">tabak (~300g)</option>
-            <option value="dilim">dilim (~30g)</option>
-            <option value="yemek_kasigi">yemek kaşığı (~15g)</option>
-            <option value="tatli_kasigi">tatlı kaşığı (~8g)</option>
-            <option value="cay_kasigi">çay kaşığı (~4g)</option>
-            <option value="su_bardagi">bardak (~200ml)</option>
-            <option value="avuc">avuç (~30g)</option>
-          </select>
-        </div>
-        <div class="sp-result" id="spResult">— kcal</div>
-        <div class="sp-macros" id="spMacros"></div>
+      <textarea class="ai-prompt-area" id="aiPrompt" placeholder="Bugün ne yedin?"></textarea>
+      <div class="ai-loading" id="aiLoading">
+        <div class="ai-spinner"></div>
+        <div class="ai-loading-text">Analiz ediliyor…</div>
+      </div>
+      <div id="aiResultWrap"></div>
+      <div id="aiActionBtns">
+        <button class="btn-primary" style="margin-top:10px;" onclick="runAI()">✨ Analiz Et</button>
+        <button class="btn-cancel" onclick="closeModal('aiModal')">İptal</button>
       </div>
     </div>
-
-    <div class="manual-sect" id="tabManual">
-      <div class="manual-hint">💡 Sadece isim ve kalori yeterli — makrolar isteğe bağlı.</div>
-      <div class="manual-top">
-        <input type="text" class="manual-name" id="manualName" placeholder="Yemek adı">
-        <input type="number" class="manual-kcal" id="manualKcal" placeholder="kcal">
-      </div>
-      <div class="macro-toggle" onclick="toggleMacros()">
-        <span class="arrow" id="macroArrow">▸</span>
-        <span id="macroToggleText">Makro ekle (opsiyonel)</span>
-      </div>
-      <div class="macro-opt" id="macroOpt">
-        <div class="macro-opt-item">
-          <input type="number" id="manualProt" placeholder="0" style="color:var(--teal);border-color:rgba(78,205,196,0.2);">
-          <label style="color:var(--teal)">Protein g</label>
-        </div>
-        <div class="macro-opt-item">
-          <input type="number" id="manualCarb" placeholder="0" style="color:var(--gold);border-color:rgba(201,168,76,0.2);">
-          <label style="color:var(--gold)">Karb g</label>
-        </div>
-        <div class="macro-opt-item">
-          <input type="number" id="manualFat" placeholder="0" style="color:var(--orange);border-color:rgba(224,138,78,0.2);">
-          <label style="color:var(--orange)">Yağ g</label>
-        </div>
-      </div>
-    </div>
-
-    <button class="btn-primary" onclick="addFoodEntry()">Ekle</button>
-    <button class="btn-cancel" onclick="closeFoodModal()">İptal</button>
   </div>
 </div>
 
-<!-- EGZERSİZ MODAL -->
-<div class="modal-overlay" id="exerciseModal" onclick="overlayClose(event,'exerciseModal')">
+<!-- EXERCISE MODAL -->
+<div class="modal-overlay" id="exModal" onclick="ovClose(event,'exModal')">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">Egzersiz Ekle</div>
-    <div class="search-box">
-      <span style="color:var(--text3)">🔍</span>
-      <input type="text" id="exSearch" placeholder="Egzersiz ara…" oninput="filterExercises()" autocomplete="off">
+    <div class="ex-hint">💬 AI'a sor: <em>"15 dk koşu + 30 dk ağırlık kaç kcal?"</em><br>Aldığın tahmini buraya gir.</div>
+    <div class="ex-manual-row">
+      <input type="text" class="ex-name-input" id="exName" placeholder="Egzersiz adı">
+      <input type="number" class="ex-kcal-input" id="exKcal" placeholder="kcal">
     </div>
-    <div class="ex-db" id="exDbList"></div>
-    <div class="ex-selected" id="exSelected">
-      <div class="ex-sel-name" id="exSelName"></div>
-      <div class="ex-dur-row">
-        <input type="number" id="exDuration" value="30" oninput="updateExPreview()" min="1" max="300">
-        <span>dakika</span>
+    <button class="btn-green" onclick="addExEntry()">Ekle 🔥</button>
+    <button class="btn-cancel" onclick="closeModal('exModal')">İptal</button>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="editModal" onclick="ovClose(event,'editModal')">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="editModalTitle">Düzenle</div>
+    <div id="editFields"></div>
+    <button class="btn-primary" onclick="saveEdit()">Kaydet</button>
+    <button class="btn-cancel" onclick="closeModal('editModal')">İptal</button>
+  </div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div class="modal-overlay" id="profileModal" onclick="ovClose(event,'profileModal')">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Profil Düzenle</div>
+    <div class="pe-field"><label>İsim</label><input type="text" id="peName"></div>
+    <div class="pe-field"><label>Cinsiyet</label>
+      <div class="gender-btns">
+        <div class="gender-btn" id="peGM" onclick="setPeG('M')">👨 Erkek</div>
+        <div class="gender-btn" id="peGF" onclick="setPeG('F')">👩 Kadın</div>
       </div>
-      <div class="ex-result" id="exResult">— kcal yakılır</div>
-      <div class="ex-note" id="exNote"></div>
     </div>
-    <button class="btn-green" onclick="addExerciseEntry()">Egzersiz Ekle 🔥</button>
-    <button class="btn-cancel" onclick="closeExerciseModal()">İptal</button>
+    <div class="form-row">
+      <div class="pe-field"><label>Yaş</label><input type="number" id="peAge"></div>
+      <div class="pe-field"><label>Boy (cm)</label><input type="number" id="peHeight"></div>
+    </div>
+    <div class="form-row">
+      <div class="pe-field"><label>Kilo (kg)</label><input type="number" id="peWeight" step="0.1"></div>
+      <div class="pe-field"><label>Aktivite</label>
+        <select id="peActivity">
+          <option value="sedentary">Hareketsiz</option>
+          <option value="light">Hafif Aktif</option>
+          <option value="moderate">Orta Aktif</option>
+          <option value="active">Çok Aktif</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="saveProfileEdit()">Kaydet</button>
+    <button class="btn-cancel" onclick="closeModal('profileModal')">İptal</button>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// FOOD DATABASE  (100g baz · du=default unit · ug=unit_grams)
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-const FDB=[
-  // ET & TAVUK
-  {n:"Tavuk göğsü (pişmiş)",     c:165,p:31,  k:0,  f:3.6, cat:"🥩 Et"},
-  {n:"Tavuk but (pişmiş)",        c:209,p:26,  k:0,  f:11,  cat:"🥩 Et"},
-  {n:"Kıyma yağlı (pişmiş)",     c:254,p:26,  k:0,  f:17,  cat:"🥩 Et"},
-  {n:"Kıyma yağsız (pişmiş)",    c:215,p:27,  k:0,  f:12,  cat:"🥩 Et"},
-  {n:"Dana biftek (pişmiş)",      c:250,p:26,  k:0,  f:16,  cat:"🥩 Et"},
-  {n:"Köfte (pişmiş)",            c:280,p:22,  k:8,  f:18,  cat:"🥩 Et"},
-  {n:"Hindi göğsü (pişmiş)",     c:135,p:30,  k:0,  f:1,   cat:"🥩 Et"},
-  {n:"Sucuk",                     c:450,p:18,  k:1,  f:42,  cat:"🥩 Et",   du:"dilim",ug:20},
-  {n:"Pastırma",                  c:230,p:25,  k:0,  f:14,  cat:"🥩 Et",   du:"dilim",ug:15},
-  {n:"Sosis",                     c:290,p:14,  k:2,  f:25,  cat:"🥩 Et",   du:"adet", ug:50},
-  // BALIK
-  {n:"Somon (pişmiş)",            c:208,p:20,  k:0,  f:13,  cat:"🐟 Balık"},
-  {n:"Ton balığı (konserve)",     c:116,p:26,  k:0,  f:1,   cat:"🐟 Balık"},
-  {n:"Levrek (pişmiş)",           c:124,p:24,  k:0,  f:2.5, cat:"🐟 Balık"},
-  {n:"Çipura (pişmiş)",           c:130,p:26,  k:0,  f:3,   cat:"🐟 Balık"},
-  {n:"Hamsi (pişmiş)",            c:130,p:20,  k:0,  f:5,   cat:"🐟 Balık"},
-  {n:"Karides (pişmiş)",          c:99, p:24,  k:0,  f:0.3, cat:"🐟 Balık"},
-  // YUMURTA & SÜT
-  {n:"Yumurta (haşlanmış)",       c:155,p:13,  k:1.1,f:11,  cat:"🥚 Yumurta",du:"adet",ug:50},
-  {n:"Yumurta akı",               c:52, p:11,  k:0.7,f:0.2, cat:"🥚 Yumurta",du:"adet",ug:33},
-  {n:"Tam yağlı süt",             c:61, p:3.2, k:4.8,f:3.3, cat:"🥛 Süt",   du:"su_bardagi"},
-  {n:"Yarım yağlı süt",           c:46, p:3.3, k:4.8,f:1.5, cat:"🥛 Süt",   du:"su_bardagi"},
-  {n:"Tam yağlı yoğurt",          c:61, p:3.5, k:4.7,f:3.3, cat:"🥛 Süt",   du:"kase"},
-  {n:"Light yoğurt",              c:36, p:3.6, k:4.9,f:0.2, cat:"🥛 Süt",   du:"kase"},
-  {n:"Kefir",                     c:52, p:3.4, k:4.5,f:1.4, cat:"🥛 Süt",   du:"su_bardagi"},
-  {n:"Beyaz peynir",              c:264,p:18,  k:1.5,f:21,  cat:"🥛 Süt"},
-  {n:"Kaşar peyniri",             c:402,p:25,  k:1.5,f:33,  cat:"🥛 Süt",   du:"dilim",ug:20},
-  {n:"Lor peyniri",               c:105,p:13,  k:3.5,f:4,   cat:"🥛 Süt"},
-  {n:"Tereyağı",                  c:717,p:0.9, k:0.1,f:81,  cat:"🥛 Süt",   du:"tatli_kasigi"},
-  // TAHIL & EKMEK
-  {n:"Pirinç pilavı (pişmiş)",    c:130,p:2.7, k:28, f:0.3, cat:"🍞 Tahıl", du:"kase"},
-  {n:"Bulgur pilavı (pişmiş)",    c:83, p:3,   k:18, f:0.2, cat:"🍞 Tahıl", du:"kase"},
-  {n:"Makarna (pişmiş)",          c:131,p:5,   k:25, f:1.1, cat:"🍞 Tahıl", du:"kase"},
-  {n:"Tam buğday makarna",        c:124,p:5,   k:26, f:0.5, cat:"🍞 Tahıl", du:"kase"},
-  {n:"Beyaz ekmek",               c:265,p:9,   k:49, f:3.2, cat:"🍞 Tahıl", du:"dilim",ug:25},
-  {n:"Tam buğday ekmek",          c:247,p:13,  k:43, f:4,   cat:"🍞 Tahıl", du:"dilim",ug:28},
-  {n:"Simit",                     c:302,p:9,   k:62, f:2,   cat:"🍞 Tahıl", du:"adet", ug:120},
-  {n:"Pide (düz)",                c:271,p:9,   k:54, f:2,   cat:"🍞 Tahıl", du:"adet", ug:150},
-  {n:"Yulaf ezmesi",              c:389,p:17,  k:66, f:7,   cat:"🍞 Tahıl"},
-  {n:"Granola",                   c:453,p:10,  k:65, f:18,  cat:"🍞 Tahıl"},
-  // SEBZE
-  {n:"Domates",                   c:18, p:0.9, k:3.9,f:0.2, cat:"🥦 Sebze"},
-  {n:"Salatalık",                 c:15, p:0.7, k:3.6,f:0.1, cat:"🥦 Sebze"},
-  {n:"Biber",                     c:31, p:1,   k:6,  f:0.3, cat:"🥦 Sebze"},
-  {n:"Patlıcan",                  c:25, p:1,   k:6,  f:0.2, cat:"🥦 Sebze"},
-  {n:"Kabak",                     c:17, p:1.2, k:3.1,f:0.3, cat:"🥦 Sebze"},
-  {n:"Havuç",                     c:41, p:0.9, k:10, f:0.2, cat:"🥦 Sebze"},
-  {n:"Brokoli",                   c:34, p:2.8, k:7,  f:0.4, cat:"🥦 Sebze"},
-  {n:"Ispanak",                   c:23, p:2.9, k:3.6,f:0.4, cat:"🥦 Sebze"},
-  {n:"Marul",                     c:15, p:1.4, k:2.9,f:0.2, cat:"🥦 Sebze"},
-  {n:"Patates (haşlanmış)",       c:77, p:2,   k:17, f:0.1, cat:"🥦 Sebze"},
-  {n:"Patates kızartması",        c:312,p:3.4, k:41, f:15,  cat:"🥦 Sebze"},
-  {n:"Mısır (taze)",              c:86, p:3.2, k:19, f:1.2, cat:"🥦 Sebze"},
-  // MEYVE
-  {n:"Elma",                      c:52, p:0.3, k:14, f:0.2, cat:"🍎 Meyve", du:"adet",ug:150},
-  {n:"Muz",                       c:89, p:1.1, k:23, f:0.3, cat:"🍎 Meyve", du:"adet",ug:120},
-  {n:"Portakal",                  c:47, p:0.9, k:12, f:0.1, cat:"🍎 Meyve", du:"adet",ug:150},
-  {n:"Çilek",                     c:32, p:0.7, k:7.7,f:0.3, cat:"🍎 Meyve", du:"kase"},
-  {n:"Üzüm",                      c:67, p:0.6, k:17, f:0.4, cat:"🍎 Meyve"},
-  {n:"Karpuz",                    c:30, p:0.6, k:7.6,f:0.2, cat:"🍎 Meyve"},
-  {n:"Kavun",                     c:34, p:0.8, k:8.2,f:0.2, cat:"🍎 Meyve"},
-  {n:"Şeftali",                   c:39, p:0.9, k:10, f:0.3, cat:"🍎 Meyve", du:"adet",ug:130},
-  {n:"Armut",                     c:57, p:0.4, k:15, f:0.1, cat:"🍎 Meyve", du:"adet",ug:160},
-  {n:"Kiraz",                     c:63, p:1.1, k:16, f:0.2, cat:"🍎 Meyve"},
-  {n:"Mandalina",                 c:53, p:0.8, k:13, f:0.3, cat:"🍎 Meyve", du:"adet",ug:80},
-  // BAKLİYE
-  {n:"Mercimek çorbası",          c:116,p:9,   k:20, f:0.4, cat:"🫘 Bakliye",du:"kase"},
-  {n:"Nohut (pişmiş)",            c:164,p:9,   k:27, f:2.6, cat:"🫘 Bakliye"},
-  {n:"Fasulye pilaki",            c:127,p:9,   k:22, f:0.5, cat:"🫘 Bakliye",du:"kase"},
-  {n:"Mercimek (pişmiş)",         c:116,p:9,   k:20, f:0.4, cat:"🫘 Bakliye",du:"kase"},
-  // TÜRK MUTFAĞI
-  {n:"İmam bayıldı",              c:150,p:2,   k:12, f:11,  cat:"🫕 Türk",  du:"tabak"},
-  {n:"Karnıyarık",                c:175,p:8,   k:14, f:10,  cat:"🫕 Türk",  du:"tabak"},
-  {n:"Dolma (zeytinyağlı)",       c:120,p:2,   k:18, f:5,   cat:"🫕 Türk",  du:"adet", ug:20},
-  {n:"Sarma (etli)",              c:180,p:8,   k:15, f:10,  cat:"🫕 Türk",  du:"adet", ug:20},
-  {n:"Mantı (yoğurtlu)",         c:220,p:10,  k:28, f:8,   cat:"🫕 Türk",  du:"tabak"},
-  {n:"Lahmacun",                  c:250,p:12,  k:32, f:8,   cat:"🫕 Türk",  du:"adet", ug:150},
-  {n:"Pide (etli)",               c:280,p:14,  k:38, f:9,   cat:"🫕 Türk",  du:"adet", ug:250},
-  {n:"Şiş kebap",                 c:270,p:22,  k:3,  f:18,  cat:"🫕 Türk"},
-  {n:"Döner (tavuk)",             c:218,p:22,  k:8,  f:11,  cat:"🫕 Türk"},
-  {n:"Döner (et)",                c:285,p:20,  k:6,  f:20,  cat:"🫕 Türk"},
-  {n:"Cacık",                     c:45, p:3,   k:4,  f:1.5, cat:"🫕 Türk",  du:"kase"},
-  {n:"Ezme salata",               c:60, p:1.5, k:8,  f:2.5, cat:"🫕 Türk"},
-  {n:"Zeytinyağlı taze fasulye",  c:80, p:2,   k:10, f:3.5, cat:"🫕 Türk",  du:"tabak"},
-  {n:"Patlıcan kebabı",           c:190,p:10,  k:8,  f:13,  cat:"🫕 Türk"},
-  {n:"Güveç (karışık)",           c:155,p:12,  k:10, f:7,   cat:"🫕 Türk",  du:"tabak"},
-  {n:"Tarhana çorbası",           c:75, p:3,   k:14, f:1,   cat:"🫕 Türk",  du:"kase"},
-  {n:"Domates çorbası",           c:60, p:2,   k:10, f:1.5, cat:"🫕 Türk",  du:"kase"},
-  {n:"Yoğurt çorbası",            c:80, p:4,   k:10, f:2.5, cat:"🫕 Türk",  du:"kase"},
-  // KURUYEMIŞ
-  {n:"Fıstık ezmesi",             c:588,p:25,  k:20, f:50,  cat:"🥜 Kuruyemiş",du:"tatli_kasigi"},
-  {n:"Badem",                     c:579,p:21,  k:22, f:50,  cat:"🥜 Kuruyemiş",du:"avuc"},
-  {n:"Ceviz",                     c:654,p:15,  k:14, f:65,  cat:"🥜 Kuruyemiş",du:"avuc"},
-  {n:"Fındık",                    c:628,p:15,  k:17, f:61,  cat:"🥜 Kuruyemiş",du:"avuc"},
-  {n:"Kaju",                      c:553,p:18,  k:30, f:44,  cat:"🥜 Kuruyemiş",du:"avuc"},
-  {n:"Antep fıstığı",             c:562,p:20,  k:28, f:45,  cat:"🥜 Kuruyemiş",du:"avuc"},
-  {n:"Zeytinyağı",                c:884,p:0,   k:0,  f:100, cat:"🥜 Kuruyemiş",du:"yemek_kasigi"},
-  {n:"Zeytin (siyah)",            c:115,p:0.8, k:6,  f:11,  cat:"🥜 Kuruyemiş",du:"adet",ug:5},
-  {n:"Zeytin (yeşil)",            c:145,p:1,   k:3.8,f:15,  cat:"🥜 Kuruyemiş",du:"adet",ug:5},
-  {n:"Avokado",                   c:160,p:2,   k:9,  f:15,  cat:"🥜 Kuruyemiş",du:"adet",ug:150},
-  // TATLI
-  {n:"Çikolata (bitter)",         c:546,p:5,   k:60, f:31,  cat:"🍫 Tatlı",  du:"dilim",ug:20},
-  {n:"Çikolata (sütlü)",          c:535,p:7.7, k:60, f:30,  cat:"🍫 Tatlı",  du:"dilim",ug:20},
-  {n:"Baklava",                   c:420,p:5,   k:55, f:22,  cat:"🍫 Tatlı",  du:"adet", ug:50},
-  {n:"Sütlaç",                    c:140,p:4,   k:27, f:2.5, cat:"🍫 Tatlı",  du:"kase"},
-  {n:"Muhallebi",                 c:130,p:3.5, k:24, f:2.5, cat:"🍫 Tatlı",  du:"kase"},
-  {n:"Bisküvi",                   c:430,p:8,   k:70, f:13,  cat:"🍫 Tatlı",  du:"adet", ug:10},
-  {n:"Cips",                      c:547,p:6,   k:53, f:35,  cat:"🍫 Tatlı"},
-  // İÇECEK
-  {n:"Çay (şekersiz)",            c:1,  p:0,   k:0.2,f:0,   cat:"☕ İçecek", du:"su_bardagi"},
-  {n:"Çay (şekerli, 1 kesme)",    c:16, p:0,   k:4,  f:0,   cat:"☕ İçecek", du:"su_bardagi"},
-  {n:"Türk kahvesi (sade)",       c:2,  p:0.3, k:0.3,f:0.1, cat:"☕ İçecek", du:"adet", ug:60},
-  {n:"Türk kahvesi (şekerli)",    c:30, p:0.3, k:7,  f:0.1, cat:"☕ İçecek", du:"adet", ug:60},
-  {n:"Neskafé (sütlü)",          c:55, p:1.5, k:8,  f:1.5, cat:"☕ İçecek", du:"adet", ug:200},
-  {n:"Portakal suyu (taze)",      c:45, p:0.7, k:10, f:0.2, cat:"☕ İçecek", du:"su_bardagi"},
-  {n:"Ayran",                     c:40, p:3,   k:4,  f:1,   cat:"☕ İçecek", du:"su_bardagi"},
-  {n:"Kola",                      c:42, p:0,   k:11, f:0,   cat:"☕ İçecek", du:"su_bardagi"},
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// API KEY — buraya yapıştır
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const GEMINI_KEY = "AIzaSyAX2gpkXESl8VSuUVVVDHkmxJ7gntOpGGI";
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// CONFIG
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const DRINKS=[
+  {id:'su',    name:'Su',      icon:'💧', kcal:0,  color:'var(--teal)'},
+  {id:'cay',   name:'Çay',     icon:'🫖', kcal:2,  color:'#c8a96e'},
+  {id:'tk',    name:'T.Kahve', icon:'☕', kcal:5,  color:'#b08050'},
+  {id:'fk',    name:'F.Kahve', icon:'☕', kcal:15, color:'#b08050'},
+  {id:'nesk',  name:'Neskafé', icon:'☕', kcal:55, color:'#b08050'},
+  {id:'ayran', name:'Ayran',   icon:'🥛', kcal:40, color:'var(--text2)'},
+];
+const MEALS=[
+  {key:'k',label:'☀️ Kahvaltı'},
+  {key:'o',label:'🥗 Öğle'},
+  {key:'a',label:'🌙 Akşam'},
+  {key:'s',label:'🍎 Ara Öğün'},
 ];
 
-const UG={g:1,ml:1,kase:200,tabak:300,dilim:30,yemek_kasigi:15,tatli_kasigi:8,cay_kasigi:4,su_bardagi:200,avuc:30,adet:null};
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// EGZERSİZ VERİTABANI (kcal/saat · 70kg baz)
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-const EDB=[
-  {n:"Yürüyüş (sakin)",     c:280,i:"🚶"},{n:"Yürüyüş (hızlı)",    c:380,i:"🚶"},
-  {n:"Koşu (8 km/s)",       c:560,i:"🏃"},{n:"Koşu (10 km/s)",     c:700,i:"🏃"},
-  {n:"Koşu (12 km/s)",      c:840,i:"🏃"},{n:"Bisiklet (hafif)",   c:420,i:"🚴"},
-  {n:"Bisiklet (orta)",     c:560,i:"🚴"},{n:"Yüzme",              c:500,i:"🏊"},
-  {n:"Fitness/Ağırlık",     c:350,i:"🏋️"},{n:"HIIT",               c:700,i:"⚡"},
-  {n:"Pilates",             c:250,i:"🧘"},{n:"Yoga",               c:200,i:"🧘"},
-  {n:"Dans",                c:380,i:"💃"},{n:"Futbol",             c:560,i:"⚽"},
-  {n:"Basketbol",           c:490,i:"🏀"},{n:"Tenis",              c:490,i:"🎾"},
-  {n:"Squash",              c:700,i:"🎾"},{n:"İp atlama",          c:700,i:"🪝"},
-  {n:"Elliptical",          c:490,i:"🏋️"},{n:"Kürek/Rowing",       c:490,i:"🚣"},
-];
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // STATE
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-let S={profiles:[],activeProfile:0,logs:{},weights:{}};
-const MEALS=[{key:'k',label:'☀️ Kahvaltı'},{key:'o',label:'🥗 Öğle'},{key:'a',label:'🌙 Akşam'},{key:'s',label:'🍎 Ara Öğün'}];
-let currentDate=todayStr(),addingToMeal=null,selFood=null,selEx=null,fTab='db',macroOpen=false;
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let S={profile:null,logs:{},weights:[],history:[]};
+let curDate=todayStr(),addingToMeal=null,editCtx=null,aiResultData=null;
+let setupGender='M',peGender='M';
 
 function todayStr(){return new Date().toISOString().split('T')[0];}
 function dateLabel(s){
   const d=new Date(s+'T12:00:00');
   const days=['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
   const months=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
-  if(s===todayStr()) return `Bugün, ${d.getDate()} ${months[d.getMonth()]}`;
-  return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}`;
+  if(s===todayStr())return`Bugün, ${d.getDate()} ${months[d.getMonth()]}`;
+  return`${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}`;
 }
-function save(){localStorage.setItem('nt_v3',JSON.stringify(S));}
-function load(){const s=localStorage.getItem('nt_v3');if(s)S=JSON.parse(s);}
+function save(){localStorage.setItem('nt_v5',JSON.stringify(S));}
+function load(){const s=localStorage.getItem('nt_v5');if(s){S=JSON.parse(s);if(!S.history)S.history=[];if(!S.weights)S.weights=[];}}
 
 function calcTDEE(p){
   const bmr=p.gender==='M'?10*p.weight+6.25*p.height-5*p.age+5:10*p.weight+6.25*p.height-5*p.age-161;
@@ -651,78 +522,76 @@ function calcTDEE(p){
 }
 function macroG(kcal){return{p:Math.round(kcal*.30/4),c:Math.round(kcal*.40/4),f:Math.round(kcal*.30/9)};}
 
-// ── SETUP ──
-let setupP=[{name:'',gender:'M',age:'',height:'',weight:'',activity:'light'}],setupIdx=0;
-function renderSetupForm(){
-  const p=setupP[setupIdx];
-  document.getElementById('setupForms').innerHTML=`
-    <div class="form-group"><label>İsim</label><input type="text" value="${p.name}" placeholder="Adınız" oninput="setupP[${setupIdx}].name=this.value;previewTDEE()"></div>
-    <div class="form-group"><label>Cinsiyet</label><div class="gender-btns">
-      <div class="gender-btn ${p.gender==='M'?'active':''}" onclick="setG('M')">👨 Erkek</div>
-      <div class="gender-btn ${p.gender==='F'?'active':''}" onclick="setG('F')">👩 Kadın</div>
-    </div></div>
-    <div class="form-row">
-      <div class="form-group"><label>Yaş</label><input type="number" value="${p.age}" placeholder="30" oninput="setupP[${setupIdx}].age=this.value;previewTDEE()"></div>
-      <div class="form-group"><label>Boy (cm)</label><input type="number" value="${p.height}" placeholder="175" oninput="setupP[${setupIdx}].height=this.value;previewTDEE()"></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>Kilo (kg)</label><input type="number" value="${p.weight}" placeholder="75" oninput="setupP[${setupIdx}].weight=this.value;previewTDEE()"></div>
-      <div class="form-group"><label>Aktivite</label><select onchange="setupP[${setupIdx}].activity=this.value;previewTDEE()">
-        <option value="sedentary" ${p.activity==='sedentary'?'selected':''}>Hareketsiz</option>
-        <option value="light" ${p.activity==='light'?'selected':''}>Hafif Aktif</option>
-        <option value="moderate" ${p.activity==='moderate'?'selected':''}>Orta Aktif</option>
-        <option value="active" ${p.activity==='active'?'selected':''}>Çok Aktif</option>
-      </select></div>
-    </div>`;
-}
-function setG(g){setupP[setupIdx].gender=g;renderSetupForm();previewTDEE();}
-function switchSetupProfile(i){setupIdx=i;document.querySelectorAll('.profile-tab').forEach((t,j)=>t.classList.toggle('active',j===i));renderSetupForm();previewTDEE();}
-function addProfileSetup(){
-  setupP.push({name:`Profil ${setupP.length+1}`,gender:'F',age:'',height:'',weight:'',activity:'light'});
-  const tabs=document.getElementById('profileTabsSetup'),btn=tabs.querySelector('.add-profile-btn');
-  const t=document.createElement('div');t.className='profile-tab';t.textContent=`Profil ${setupP.length}`;
-  const i=setupP.length-1;t.onclick=()=>switchSetupProfile(i);tabs.insertBefore(t,btn);switchSetupProfile(i);
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// SETUP
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function setGender(g){
+  setupGender=g;
+  document.getElementById('gM').classList.toggle('active',g==='M');
+  document.getElementById('gF').classList.toggle('active',g==='F');
 }
 function previewTDEE(){
-  const p=setupP[setupIdx],box=document.getElementById('tdeePreview');
-  if(p.age&&p.height&&p.weight){const{goal}=calcTDEE({gender:p.gender,weight:+p.weight,height:+p.height,age:+p.age,activity:p.activity});box.style.display='block';document.getElementById('tdeeVal').textContent=goal+' kcal';}
+  const age=+document.getElementById('sAge').value,h=+document.getElementById('sHeight').value,w=+document.getElementById('sWeight').value,act=document.getElementById('sActivity').value;
+  const box=document.getElementById('tdeePreview');
+  if(age&&h&&w){const{goal}=calcTDEE({gender:setupGender,age,height:h,weight:w,activity:act});box.style.display='block';document.getElementById('tdeeVal').textContent=goal+' kcal';}
   else box.style.display='none';
 }
 function saveSetup(){
-  for(const p of setupP){if(!p.name||!p.age||!p.height||!p.weight){toast('⚠️ Tüm alanları doldurun');return;}}
-  S.profiles=setupP.map(p=>({name:p.name,gender:p.gender,age:+p.age,height:+p.height,weight:+p.weight,activity:p.activity}));
+  const name=document.getElementById('sName').value.trim(),age=+document.getElementById('sAge').value,h=+document.getElementById('sHeight').value,w=+document.getElementById('sWeight').value;
+  if(!name||!age||!h||!w){toast('⚠️ Tüm alanları doldur');return;}
+  S.profile={name,gender:setupGender,age,height:h,weight:w,activity:document.getElementById('sActivity').value};
   save();document.getElementById('setup').style.display='none';initApp();
 }
-function openSetupForEdit(){
-  setupP=S.profiles.map(p=>({...p,age:String(p.age),height:String(p.height),weight:String(p.weight)}));setupIdx=0;
-  const tabs=document.getElementById('profileTabsSetup');tabs.innerHTML='';
-  setupP.forEach((p,i)=>{const t=document.createElement('div');t.className='profile-tab'+(i===0?' active':'');t.textContent=p.name||`Profil ${i+1}`;t.onclick=()=>switchSetupProfile(i);tabs.appendChild(t);});
-  const ab=document.createElement('button');ab.className='add-profile-btn';ab.textContent='+ Ekle';ab.onclick=addProfileSetup;tabs.appendChild(ab);
-  renderSetupForm();previewTDEE();document.getElementById('setup').style.display='block';
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// PROFILE EDIT
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function openProfileModal(){
+  const p=S.profile;peGender=p.gender;
+  document.getElementById('peName').value=p.name;
+  document.getElementById('peAge').value=p.age;
+  document.getElementById('peHeight').value=p.height;
+  document.getElementById('peWeight').value=p.weight;
+  document.getElementById('peActivity').value=p.activity;
+  document.getElementById('peGM').classList.toggle('active',p.gender==='M');
+  document.getElementById('peGF').classList.toggle('active',p.gender==='F');
+  document.getElementById('profileModal').classList.add('open');
+}
+function setPeG(g){peGender=g;document.getElementById('peGM').classList.toggle('active',g==='M');document.getElementById('peGF').classList.toggle('active',g==='F');}
+function saveProfileEdit(){
+  const name=document.getElementById('peName').value.trim(),age=+document.getElementById('peAge').value,h=+document.getElementById('peHeight').value,w=+document.getElementById('peWeight').value;
+  if(!name||!age||!h||!w){toast('⚠️ Tüm alanları doldur');return;}
+  S.profile={...S.profile,name,gender:peGender,age,height:h,weight:w,activity:document.getElementById('peActivity').value};
+  save();closeModal('profileModal');toast('✅ Profil güncellendi');
+  document.getElementById('topbarName').textContent=S.profile.name;
+  renderDaily();renderProfiles();
 }
 
-// ── LOG ──
-function getLog(d,pid){
-  if(!S.logs[d])S.logs[d]={};
-  if(!S.logs[d][pid])S.logs[d][pid]={meals:{k:[],o:[],a:[],s:[]},water:0,exercises:[]};
-  if(!S.logs[d][pid].exercises)S.logs[d][pid].exercises=[];
-  return S.logs[d][pid];
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// LOG
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function getLog(d){
+  if(!S.logs[d])S.logs[d]={meals:{k:[],o:[],a:[],s:[]},drinks:{},exercises:[]};
+  if(!S.logs[d].exercises)S.logs[d].exercises=[];
+  if(!S.logs[d].drinks)S.logs[d].drinks={};
+  return S.logs[d];
 }
-function dayTotals(d,pid){
-  const l=getLog(d,pid);let kcal=0,p=0,c=0,f=0;
-  for(const m of Object.values(l.meals))for(const e of m){kcal+=e.kcal;p+=e.prot;c+=e.carb;f+=e.fat;}
+function dayTotals(d){
+  const l=getLog(d);let kcal=0,p=0,c=0,f=0;
+  for(const m of Object.values(l.meals))for(const e of m){kcal+=e.kcal;p+=e.prot||0;c+=e.carb||0;f+=e.fat||0;}
+  const dKcal=DRINKS.reduce((s,dr)=>s+dr.kcal*(l.drinks[dr.id]||0),0);
   const burned=l.exercises.reduce((s,e)=>s+e.kcal,0);
-  return{kcal:Math.round(kcal),p:Math.round(p),c:Math.round(c),f:Math.round(f),burned:Math.round(burned)};
+  return{kcal:Math.round(kcal+dKcal),p:Math.round(p),c:Math.round(c),f:Math.round(f),burned:Math.round(burned)};
 }
 
-// ── RENDER DAILY ──
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// RENDER
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 function renderDaily(){
-  const pid=S.activeProfile,pr=S.profiles[pid],{goal}=calcTDEE(pr),mg=macroG(goal),tot=dayTotals(currentDate,pid),l=getLog(currentDate,pid);
-  document.getElementById('dateLabel').textContent=dateLabel(currentDate);
-  document.getElementById('topbarSub').textContent=currentDate===todayStr()?'Bugün':dateLabel(currentDate);
-  // ring
+  const p=S.profile,{goal}=calcTDEE(p),mg=macroG(goal),tot=dayTotals(curDate),l=getLog(curDate);
+  document.getElementById('dateLabel').textContent=dateLabel(curDate);
   const pct=Math.min(tot.kcal/goal,1);
-  document.getElementById('ringFill').style.strokeDashoffset=339.3-pct*339.3;
+  document.getElementById('ringFill').style.strokeDashoffset=314.2-pct*314.2;
   document.getElementById('ringKcal').textContent=tot.kcal;
   document.getElementById('statGoal').textContent=goal;
   document.getElementById('statBurned').textContent=tot.burned;
@@ -731,25 +600,49 @@ function renderDaily(){
   document.getElementById('statRemaining').textContent=rem>0?rem:0;
   document.getElementById('barRemaining').style.width=Math.max(rem/goal*100,0)+'%';
   document.getElementById('barRemaining').style.background=rem<0?'var(--red)':'var(--teal)';
-  // macros
-  ['P','C','F'].forEach(x=>{const key=x.toLowerCase();document.getElementById('macro'+x).textContent=tot[key]+'g';document.getElementById('macroG'+x).textContent='/ '+mg[key.replace('p','p').replace('c','c').replace('f','f')]+'g';});
   document.getElementById('macroP').textContent=tot.p+'g';document.getElementById('macroGP').textContent='/ '+mg.p+'g';
   document.getElementById('macroC').textContent=tot.c+'g';document.getElementById('macroGC').textContent='/ '+mg.c+'g';
   document.getElementById('macroF').textContent=tot.f+'g';document.getElementById('macroGF').textContent='/ '+mg.f+'g';
-  // water
-  document.getElementById('waterVal').textContent=`${l.water} / 8 bardak`;
-  const gd=document.getElementById('waterGlasses');gd.innerHTML='';
-  for(let i=0;i<8;i++){const g=document.createElement('div');g.className='water-glass'+(i<l.water?' filled':'');gd.appendChild(g);}
-  // exercise
-  document.getElementById('exerciseBurned').textContent=tot.burned>0?`−${tot.burned} kcal yakıldı`:'0 kcal yakıldı';
-  const el=document.getElementById('exerciseList');el.innerHTML='';
+  renderDrinks(l);renderExercises(l,tot);renderMeals(l);
+}
+
+function renderDrinks(l){
+  const grid=document.getElementById('drinksGrid');grid.innerHTML='';
+  let total=0;
+  DRINKS.forEach(dr=>{
+    const cnt=l.drinks[dr.id]||0;total+=dr.kcal*cnt;
+    const div=document.createElement('div');div.className='drink-item';
+    div.innerHTML=`<div class="drink-icon">${dr.icon}</div>
+    <div class="drink-name" style="color:${dr.color}">${dr.name}</div>
+    <div class="drink-count" style="color:${dr.color}">${cnt}</div>
+    <div class="drink-btns">
+      <button class="drink-btn minus" onclick="changeDrink('${dr.id}',-1)">−</button>
+      <button class="drink-btn plus" onclick="changeDrink('${dr.id}',1)">+</button>
+    </div>`;
+    grid.appendChild(div);
+  });
+  document.getElementById('drinksKcal').textContent=total>0?total+' kcal':'';
+}
+function changeDrink(id,dir){const l=getLog(curDate);l.drinks[id]=Math.max(0,(l.drinks[id]||0)+dir);save();renderDaily();}
+
+function renderExercises(l,tot){
+  document.getElementById('exBurned').textContent=tot.burned>0?`−${tot.burned} kcal yakıldı`:'0 kcal yakıldı';
+  const el=document.getElementById('exList');el.innerHTML='';
   l.exercises.forEach((ex,i)=>{
-    const r=document.createElement('div');r.className='exercise-item';
-    r.innerHTML=`<div><div class="exercise-item-name">${ex.i||'🏃'} ${ex.name}</div><div class="exercise-item-detail">${ex.dur} dakika</div></div>
-    <div class="exercise-item-right"><span class="exercise-item-kcal">−${ex.kcal} kcal</span><button class="del-btn" onclick="removeEx(${i})">×</button></div>`;
+    const r=document.createElement('div');r.className='ex-item';
+    r.innerHTML=`<div class="ex-item-name">${ex.name}</div>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <span class="ex-item-kcal">−${ex.kcal} kcal</span>
+      <div class="item-actions">
+        <button class="edit-btn" onclick="openEditEx(${i})">✏️</button>
+        <button class="del-btn" onclick="delEx(${i})">×</button>
+      </div>
+    </div>`;
     el.appendChild(r);
   });
-  // meals
+}
+
+function renderMeals(l){
   const mg2=document.getElementById('mealGroups');mg2.innerHTML='';
   for(const m of MEALS){
     const items=l.meals[m.key]||[],mKcal=items.reduce((s,e)=>s+e.kcal,0);
@@ -757,210 +650,286 @@ function renderDaily(){
     const hdr=document.createElement('div');hdr.className='meal-group-header';
     hdr.innerHTML=`<span class="meal-group-name">${m.label}</span><span class="meal-group-kcal">${Math.round(mKcal)} kcal</span>`;
     const iDiv=document.createElement('div');iDiv.className='meal-items';
-    items.forEach((e,i)=>{const r=document.createElement('div');r.className='meal-item';
-      r.innerHTML=`<div><div class="meal-item-name">${e.name}</div><div class="meal-item-detail">${e.amtLabel}</div></div>
-      <div class="meal-item-right"><span class="meal-item-kcal">${Math.round(e.kcal)} kcal</span><button class="del-btn" onclick="removeEntry('${m.key}',${i})">×</button></div>`;
-      iDiv.appendChild(r);});
-    const ar=document.createElement('div');ar.className='meal-add-row';ar.innerHTML='<span>+</span><span>Yemek ekle</span>';ar.onclick=()=>openFoodModal(m.key,m.label);
+    items.forEach((e,i)=>{
+      const r=document.createElement('div');r.className='meal-item';
+      r.innerHTML=`<div><div class="meal-item-name">${e.name}</div><div class="meal-item-detail">${e.note||''}</div></div>
+      <div class="meal-item-right">
+        <span class="meal-item-kcal">${Math.round(e.kcal)} kcal</span>
+        <div class="item-actions">
+          <button class="edit-btn" onclick="openEditFood('${m.key}',${i})">✏️</button>
+          <button class="del-btn" onclick="delFood('${m.key}',${i})">×</button>
+        </div>
+      </div>`;
+      iDiv.appendChild(r);
+    });
+    const ar=document.createElement('div');ar.className='meal-add-row';
+    ar.innerHTML='<span>✨</span><span>AI ile yemek ekle</span>';
+    ar.onclick=()=>openAIModal(m.key,m.label);
     grp.appendChild(hdr);grp.appendChild(iDiv);grp.appendChild(ar);mg2.appendChild(grp);
   }
 }
-function changeDate(dir){const d=new Date(currentDate+'T12:00:00');d.setDate(d.getDate()+dir);const nd=d.toISOString().split('T')[0];if(nd>todayStr())return;currentDate=nd;renderDaily();}
-function changeWater(dir){const l=getLog(currentDate,S.activeProfile);l.water=Math.max(0,Math.min(8,l.water+dir));save();renderDaily();}
-function removeEntry(mk,i){getLog(currentDate,S.activeProfile).meals[mk].splice(i,1);save();renderDaily();}
-function removeEx(i){getLog(currentDate,S.activeProfile).exercises.splice(i,1);save();renderDaily();}
 
-// ── FOOD MODAL ──
-function openFoodModal(mk,ml){
-  addingToMeal=mk;selFood=null;
-  document.getElementById('modalFoodTitle').textContent=ml+' — Yemek Ekle';
-  document.getElementById('foodSearch').value='';
-  document.getElementById('selPreview').classList.remove('show');
-  document.getElementById('manualName').value='';document.getElementById('manualKcal').value='';
-  document.getElementById('manualProt').value='';document.getElementById('manualCarb').value='';document.getElementById('manualFat').value='';
-  macroOpen=false;document.getElementById('macroOpt').classList.remove('show');document.getElementById('macroArrow').textContent='▸';document.getElementById('macroToggleText').textContent='Makro ekle (opsiyonel)';
-  switchFoodTab('db');filterFoods();
-  document.getElementById('foodModal').classList.add('open');
+function changeDate(dir){
+  const d=new Date(curDate+'T12:00:00');d.setDate(d.getDate()+dir);
+  const nd=d.toISOString().split('T')[0];if(nd>todayStr())return;
+  curDate=nd;renderDaily();
 }
-function closeFoodModal(){document.getElementById('foodModal').classList.remove('open');}
-function overlayClose(e,id){if(e.target===document.getElementById(id))document.getElementById(id).classList.remove('open');}
-function switchFoodTab(t){
-  fTab=t;
-  document.getElementById('tabBtnDB').classList.toggle('active',t==='db');
-  document.getElementById('tabBtnManual').classList.toggle('active',t==='manual');
-  document.getElementById('tabDB').style.display=t==='db'?'block':'none';
-  document.getElementById('tabManual').style.display=t==='manual'?'block':'none';
-  if(t==='manual'){selFood=null;document.getElementById('selPreview').classList.remove('show');}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// DELETE & EDIT
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function delFood(mk,i){getLog(curDate).meals[mk].splice(i,1);save();renderDaily();}
+function delEx(i){getLog(curDate).exercises.splice(i,1);save();renderDaily();}
+
+function openEditFood(mk,i){
+  const e=getLog(curDate).meals[mk][i];editCtx={type:'food',mk,i};
+  document.getElementById('editModalTitle').textContent='Girişi Düzenle';
+  document.getElementById('editFields').innerHTML=`
+    <div class="edit-field"><label>Yemek Adı</label><input type="text" id="efName" value="${e.name}"></div>
+    <div class="edit-field"><label>Kalori (kcal)</label><input type="number" id="efKcal" value="${Math.round(e.kcal)}" style="color:var(--gold)"></div>
+    <div class="edit-field"><label>Not (opsiyonel)</label><input type="text" id="efNote" value="${e.note||''}"></div>`;
+  openModal('editModal');
 }
-function filterFoods(){
-  const q=document.getElementById('foodSearch').value.toLowerCase().trim();
-  const list=document.getElementById('foodList');
-  const filtered=q?FDB.filter(f=>f.n.toLowerCase().includes(q)):FDB.slice(0,22);
-  list.innerHTML=filtered.slice(0,40).map(f=>{
-    const idx=FDB.indexOf(f);
-    const du=f.du||'g';
-    const hint=du==='adet'?`1 adet≈${f.ug||'?'}g`:du==='g'?'gram gir':du==='kase'?'1 kase≈200g':du==='tabak'?'1 tabak≈300g':du==='dilim'?'1 dilim≈30g':du==='tatli_kasigi'?'tatlı kaşığı':du==='yemek_kasigi'?'yemek kaşığı':du==='avuc'?'avuç≈30g':du==='su_bardagi'?'bardak≈200ml':'';
-    return `<div class="food-item" onclick="selFoodItem(${idx})">
-      <div><div class="food-item-name">${f.n}</div><div class="food-item-sub">${f.cat}</div></div>
-      <div class="food-item-right"><div class="food-item-cal">${f.c} kcal/100g</div><div class="food-item-hint">${hint}</div></div>
-    </div>`;
-  }).join('');
+function openEditEx(i){
+  const e=getLog(curDate).exercises[i];editCtx={type:'ex',i};
+  document.getElementById('editModalTitle').textContent='Egzersiz Düzenle';
+  document.getElementById('editFields').innerHTML=`
+    <div class="edit-field"><label>Egzersiz</label><input type="text" id="efName" value="${e.name}"></div>
+    <div class="edit-field"><label>Yakılan (kcal)</label><input type="number" id="efKcal" value="${e.kcal}" style="color:var(--green)"></div>`;
+  openModal('editModal');
 }
-function selFoodItem(idx){
-  selFood=FDB[idx];
-  const du=selFood.du||'g';
-  document.getElementById('unitSelect').value=du;
-  const defAmt=du==='g'||du==='ml'?100:1;
-  document.getElementById('amountInput').value=defAmt;
-  document.getElementById('spName').textContent=selFood.n;
-  document.getElementById('selPreview').classList.add('show');
-  updateFoodPreview();
+function saveEdit(){
+  const name=document.getElementById('efName').value.trim(),kcal=parseFloat(document.getElementById('efKcal').value)||0;
+  if(!name||!kcal){toast('⚠️ Ad ve kalori gerekli');return;}
+  const l=getLog(curDate);
+  if(editCtx.type==='food'){const note=document.getElementById('efNote').value.trim();l.meals[editCtx.mk][editCtx.i]={...l.meals[editCtx.mk][editCtx.i],name,kcal,note};}
+  else{l.exercises[editCtx.i]={...l.exercises[editCtx.i],name,kcal};}
+  save();closeModal('editModal');toast('✅ Güncellendi');renderDaily();
 }
-function getGrams(){
-  const u=document.getElementById('unitSelect').value,amt=parseFloat(document.getElementById('amountInput').value)||0;
-  if(u==='adet'&&selFood&&selFood.ug)return amt*selFood.ug;
-  return UG[u]!==null?amt*(UG[u]||1):amt;
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// AI — GEMINI
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function openAIModal(mk,ml){
+  addingToMeal=mk;aiResultData=null;
+  document.getElementById('aiModalTitle').textContent=ml+' — AI ile Ekle';
+  document.getElementById('aiPrompt').value='';
+  document.getElementById('aiLoading').classList.remove('show');
+  document.getElementById('aiResultWrap').innerHTML='';
+  document.getElementById('aiActionBtns').style.display='block';
+  const top=getTopHistory(8);
+  const qp=document.getElementById('quickPicks'),chips=document.getElementById('quickChips');
+  if(top.length>0){
+    chips.innerHTML=top.map(h=>`<div class="qchip" onclick="appendChip('${h.name.replace(/'/g,"\\'")}')">+${h.name}</div>`).join('');
+    qp.style.display='block';
+  }else qp.style.display='none';
+  document.getElementById('aiModal').classList.add('open');
+  setTimeout(()=>document.getElementById('aiPrompt').focus(),300);
 }
-function updateFoodPreview(){
-  if(!selFood)return;
-  const g=getGrams(),kcal=selFood.c*g/100,pr=selFood.p*g/100,ca=selFood.k*g/100,fa=selFood.f*g/100;
-  document.getElementById('spResult').textContent=Math.round(kcal)+' kcal';
-  document.getElementById('spMacros').textContent=`P: ${pr.toFixed(1)}g  K: ${ca.toFixed(1)}g  Y: ${fa.toFixed(1)}g`;
+
+function appendChip(name){
+  const ta=document.getElementById('aiPrompt');
+  ta.value=(ta.value.trim()?ta.value.trim()+', ':'')+name;
+  ta.focus();
 }
-function toggleMacros(){
-  macroOpen=!macroOpen;
-  document.getElementById('macroOpt').classList.toggle('show',macroOpen);
-  document.getElementById('macroArrow').textContent=macroOpen?'▾':'▸';
-  document.getElementById('macroToggleText').textContent=macroOpen?'Makroları gizle':'Makro ekle (opsiyonel)';
-}
-function addFoodEntry(){
-  const l=getLog(currentDate,S.activeProfile);
-  if(fTab==='manual'){
-    const name=document.getElementById('manualName').value.trim(),kcal=parseFloat(document.getElementById('manualKcal').value)||0;
-    if(!name||!kcal){toast('⚠️ Ad ve kalori gerekli');return;}
-    l.meals[addingToMeal].push({name,kcal,prot:parseFloat(document.getElementById('manualProt').value)||0,carb:parseFloat(document.getElementById('manualCarb').value)||0,fat:parseFloat(document.getElementById('manualFat').value)||0,amtLabel:'Manuel giriş'});
-    toast('✅ Eklendi');closeFoodModal();save();renderDaily();return;
+
+async function runAI(){
+  const prompt=document.getElementById('aiPrompt').value.trim();
+  if(!prompt){toast('⚠️ Ne yediğini yaz');return;}
+
+  document.getElementById('aiActionBtns').style.display='none';
+  document.getElementById('aiResultWrap').innerHTML='';
+  document.getElementById('aiLoading').classList.add('show');
+
+  const systemPrompt=`Sen bir beslenme uzmanısın. Kullanıcı Türkçe olarak yediği yiyecekleri yazacak.
+Her yiyecek için tahmini kalori değerini hesapla.
+SADECE JSON döndür, başka hiçbir şey yazma, markdown kullanma:
+{"items":[{"name":"Yemek adı","kcal":123,"prot":10,"carb":20,"fat":5}],"total_kcal":456,"note":"kısa not"}
+- Miktarları dikkate al
+- Türk yemekleri için ortalama ev yapımı porsiyonları kullan
+- Makrolar 0 olabilir`;
+
+  try{
+    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        contents:[{parts:[{text:systemPrompt+'\n\nKullanıcı: '+prompt}]}],
+        generationConfig:{temperature:0.1,maxOutputTokens:800}
+      })
+    });
+    const data=await res.json();
+    if(data.error)throw new Error(data.error.message);
+    let text=data.candidates[0].content.parts[0].text.trim();
+    text=text.replace(/```json|```/g,'').trim();
+    const parsed=JSON.parse(text);
+    aiResultData=parsed;
+    showAIResult(parsed);
+  }catch(err){
+    document.getElementById('aiLoading').classList.remove('show');
+    document.getElementById('aiActionBtns').style.display='block';
+    toast('⚠️ Hata: '+(err.message||'Tekrar dene'));
+    console.error(err);
   }
-  if(!selFood){toast('⚠️ Önce bir yemek seçin');return;}
-  const g=getGrams(),u=document.getElementById('unitSelect').value,amt=document.getElementById('amountInput').value;
-  const ul=u==='g'||u==='ml'?`${amt}${u}`:`${amt} ${u}${u==='adet'&&selFood.ug?` (≈${Math.round(g)}g)`:''}`;
-  l.meals[addingToMeal].push({name:selFood.n,kcal:Math.round(selFood.c*g/100),prot:+(selFood.p*g/100).toFixed(1),carb:+(selFood.k*g/100).toFixed(1),fat:+(selFood.f*g/100).toFixed(1),amtLabel:ul});
-  toast('✅ Eklendi');closeFoodModal();save();renderDaily();
 }
 
-// ── EXERCISE MODAL ──
-function openExerciseModal(){
-  selEx=null;document.getElementById('exSearch').value='';document.getElementById('exSelected').classList.remove('show');document.getElementById('exDuration').value=30;
-  filterExercises();document.getElementById('exerciseModal').classList.add('open');
-}
-function closeExerciseModal(){document.getElementById('exerciseModal').classList.remove('open');}
-function filterExercises(){
-  const q=document.getElementById('exSearch').value.toLowerCase().trim();
-  const filtered=q?EDB.filter(e=>e.n.toLowerCase().includes(q)):EDB;
-  document.getElementById('exDbList').innerHTML=filtered.map((e,i)=>{
-    const idx=EDB.indexOf(e);return`<div class="ex-db-item" onclick="selExItem(${idx})">
-    <div class="ex-db-name">${e.i} ${e.n}</div>
-    <div class="ex-db-cal">~${Math.round(e.c/60*30)} kcal/30dk</div></div>`;
-  }).join('');
-}
-function selExItem(idx){
-  selEx=EDB[idx];
-  document.getElementById('exSelName').textContent=`${selEx.i} ${selEx.n}`;
-  document.getElementById('exSelected').classList.add('show');
-  updateExPreview();
-}
-function updateExPreview(){
-  if(!selEx)return;
-  const dur=parseFloat(document.getElementById('exDuration').value)||0,pr=S.profiles[S.activeProfile];
-  const wr=(pr.weight||70)/70,kcal=Math.round(selEx.c/60*dur*wr);
-  document.getElementById('exResult').textContent=`−${kcal} kcal yakılır`;
-  document.getElementById('exNote').textContent=`${pr.name} (${pr.weight}kg) · ${dur} dakika`;
-}
-function addExerciseEntry(){
-  if(!selEx){toast('⚠️ Egzersiz seçin');return;}
-  const dur=parseFloat(document.getElementById('exDuration').value)||0;
-  if(dur<1){toast('⚠️ Süre girin');return;}
-  const pr=S.profiles[S.activeProfile],wr=(pr.weight||70)/70,kcal=Math.round(selEx.c/60*dur*wr);
-  const l=getLog(currentDate,S.activeProfile);
-  l.exercises.push({name:selEx.n,i:selEx.i,dur,kcal});
-  toast('🔥 Egzersiz eklendi');closeExerciseModal();save();renderDaily();
+function showAIResult(data){
+  document.getElementById('aiLoading').classList.remove('show');
+  const mealLabel=MEALS.find(m=>m.key===addingToMeal)?.label.replace(/[☀️🥗🌙🍎]/g,'').trim()||'Öğün';
+  document.getElementById('aiResultWrap').innerHTML=`
+    <div class="ai-result-items">
+      ${data.items.map(item=>`<div class="ai-result-item"><span class="ai-result-name">${item.name}</span><span class="ai-result-kcal">${item.kcal} kcal</span></div>`).join('')}
+    </div>
+    <div class="ai-result-total">
+      <span class="ai-result-total-label">Toplam</span>
+      <span class="ai-result-total-kcal">${data.total_kcal} kcal</span>
+    </div>
+    ${data.note?`<div style="font-size:0.73rem;color:var(--text3);margin-bottom:10px;padding:0 2px;">${data.note}</div>`:''}
+    <button class="btn-confirm" onclick="confirmAI()">✓ ${mealLabel}e Ekle</button>
+    <button class="btn-rewrite" onclick="rewrite()">✏️ Tekrar Yaz</button>`;
 }
 
-// ── WEEKLY ──
+function confirmAI(){
+  if(!aiResultData)return;
+  const l=getLog(curDate);
+  aiResultData.items.forEach(item=>{
+    l.meals[addingToMeal].push({name:item.name,kcal:item.kcal,prot:item.prot||0,carb:item.carb||0,fat:item.fat||0,note:'AI analizi'});
+    addToHistory(item.name,item.kcal);
+  });
+  save();closeModal('aiModal');toast('✅ Eklendi');renderDaily();
+}
+
+function rewrite(){
+  aiResultData=null;
+  document.getElementById('aiResultWrap').innerHTML='';
+  document.getElementById('aiActionBtns').style.display='block';
+  document.getElementById('aiPrompt').focus();
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// HISTORY
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function addToHistory(name,kcal){
+  if(!S.history)S.history=[];
+  const ex=S.history.findIndex(h=>h.name.toLowerCase()===name.toLowerCase());
+  if(ex>=0){S.history[ex].count=(S.history[ex].count||1)+1;S.history[ex].kcal=kcal;}
+  else S.history.push({name,kcal,count:1});
+  if(S.history.length>50)S.history.sort((a,b)=>b.count-a.count).splice(50);
+}
+function getTopHistory(n){return[...(S.history||[])].sort((a,b)=>b.count-a.count).slice(0,n);}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// EXERCISE
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function openExModal(){document.getElementById('exName').value='';document.getElementById('exKcal').value='';openModal('exModal');}
+function addExEntry(){
+  const name=document.getElementById('exName').value.trim(),kcal=parseFloat(document.getElementById('exKcal').value)||0;
+  if(!name||!kcal){toast('⚠️ Egzersiz adı ve kcal gir');return;}
+  getLog(curDate).exercises.push({name,kcal});
+  toast('🔥 Egzersiz eklendi');closeModal('exModal');save();renderDaily();
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// WEEKLY
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 function renderWeekly(){
-  const pid=S.activeProfile,{goal}=calcTDEE(S.profiles[pid]);
-  const chart=document.getElementById('weeklyCalChart');chart.innerHTML='';
+  const{goal}=calcTDEE(S.profile);
+  const chart=document.getElementById('weeklyChart');chart.innerHTML='';
   const days=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);days.push(d.toISOString().split('T')[0]);}
-  const maxK=Math.max(goal,...days.map(d=>dayTotals(d,pid).kcal),100);
-  const dnames=['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'];
+  const maxK=Math.max(goal,...days.map(d=>dayTotals(d).kcal),100);
+  const dn=['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'];
   days.forEach(d=>{
-    const tot=dayTotals(d,pid),net=tot.kcal-tot.burned,pct=Math.max(net/maxK*100,2),ok=net<=goal;
+    const tot=dayTotals(d),net=tot.kcal-tot.burned,pct=Math.max(net/maxK*100,2),ok=net<=goal;
     const dd=new Date(d+'T12:00:00'),col=document.createElement('div');col.className='bar-col';
     col.innerHTML=`<div class="bar-val">${tot.kcal>0?net:''}</div>
-    <div class="bar" style="height:${pct}%;background:${ok?'var(--teal)':'var(--red)'};opacity:${d===currentDate?1:0.6}"></div>
-    <div class="bar-day">${dnames[dd.getDay()]}</div>`;
+    <div class="bar" style="height:${pct}%;background:${ok?'var(--teal)':'var(--red)'};opacity:${d===curDate?1:0.6}"></div>
+    <div class="bar-day">${dn[dd.getDay()]}</div>`;
     chart.appendChild(col);
   });
-  const weights=(S.weights[pid]||[]).slice().reverse();
+  const weights=(S.weights||[]).slice().reverse();
   document.getElementById('weightLog').innerHTML=weights.length===0
-    ?'<div style="color:var(--text3);font-size:0.83rem;text-align:center;padding:10px;">Henüz kilo kaydı yok</div>'
-    :weights.map((w,i)=>{const prev=weights[i+1],diff=prev?w.val-prev.val:null;
+    ?'<div style="color:var(--text3);font-size:0.82rem;text-align:center;padding:10px;">Henüz kilo kaydı yok</div>'
+    :weights.map((w,i)=>{
+      const prev=weights[i+1],diff=prev?w.val-prev.val:null;
       const ds=diff!==null?(diff>0?`+${diff.toFixed(1)}`:diff.toFixed(1)):'—';
       const dc=diff===null?'var(--text3)':diff<0?'var(--green)':'var(--red)';
-      return`<div class="weight-entry"><span class="weight-entry-date">${w.date}</span><span class="weight-entry-val">${w.val} kg</span><span style="font-size:0.76rem;color:${dc}">${ds} kg</span></div>`;
+      return`<div class="weight-entry">
+        <span class="weight-entry-date">${w.date}</span>
+        <span class="weight-entry-val">${w.val} kg</span>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="font-size:0.74rem;color:${dc}">${ds} kg</span>
+          <button class="del-btn" onclick="delWeight(${weights.length-1-i})">×</button>
+        </div>
+      </div>`;
     }).join('');
 }
 function logWeight(){
   const val=parseFloat(document.getElementById('weightInput').value);
   if(!val||val<20||val>300){toast('⚠️ Geçerli kilo girin');return;}
-  const pid=S.activeProfile;if(!S.weights[pid])S.weights[pid]=[];
-  const td=todayStr(),ex=S.weights[pid].findIndex(w=>w.date===td);
-  if(ex>=0)S.weights[pid][ex].val=val;else S.weights[pid].push({date:td,val});
+  if(!S.weights)S.weights=[];
+  const td=todayStr(),ex=S.weights.findIndex(w=>w.date===td);
+  if(ex>=0)S.weights[ex].val=val;else S.weights.push({date:td,val});
   save();document.getElementById('weightInput').value='';toast('✅ Kilo kaydedildi');renderWeekly();
 }
+function delWeight(i){S.weights.splice(i,1);save();toast('🗑️ Silindi');renderWeekly();}
 
-// ── PROFILE ──
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// PROFILE PAGE
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 function renderProfiles(){
-  document.getElementById('profileCards').innerHTML=S.profiles.map((p,i)=>{
-    const{bmr,tdee,goal}=calcTDEE(p);
-    return`<div class="profile-card" style="${i===S.activeProfile?'border-color:var(--gold)':''}">
-      <div class="profile-card-name">${p.name} ${i===S.activeProfile?'<span style="font-size:0.68rem;color:var(--gold);">● Aktif</span>':''}</div>
+  const p=S.profile,{bmr,tdee,goal}=calcTDEE(p);
+  document.getElementById('profileCard').innerHTML=`
+    <div class="profile-card" style="border-color:var(--gold)">
+      <div class="profile-card-name">${p.name}</div>
       <div class="profile-card-sub">${p.gender==='M'?'Erkek':'Kadın'} · ${p.age} yaş · ${p.height}cm · ${p.weight}kg</div>
-      <div class="profile-stats">
-        <div class="profile-stat"><div class="profile-stat-val">${bmr}</div><div class="profile-stat-label">BMR</div></div>
-        <div class="profile-stat"><div class="profile-stat-val">${tdee}</div><div class="profile-stat-label">TDEE</div></div>
-        <div class="profile-stat"><div class="profile-stat-val" style="color:var(--teal)">${goal}</div><div class="profile-stat-label">Hedef</div></div>
-      </div></div>`;
-  }).join('');
+      <div class="profile-stats-grid">
+        <div class="pstat"><div class="pstat-val">${bmr}</div><div class="pstat-label">BMR</div></div>
+        <div class="pstat"><div class="pstat-val">${tdee}</div><div class="pstat-label">TDEE</div></div>
+        <div class="pstat"><div class="pstat-val" style="color:var(--teal)">${goal}</div><div class="pstat-label">Hedef</div></div>
+      </div>
+    </div>`;
+  const top=getTopHistory(20);
+  const hl=document.getElementById('historyList');
+  hl.innerHTML=top.length===0
+    ?'<div class="history-empty">Henüz yemek geçmişi yok.<br>AI ile yemek ekledikçe burada görünür.</div>'
+    :top.map(h=>`<div class="history-item"><span class="history-item-name">${h.name}</span><div style="display:flex;align-items:center;gap:8px;"><span class="history-item-kcal">${h.kcal} kcal</span><span style="font-size:0.68rem;color:var(--text3);">${h.count}×</span></div></div>`).join('');
 }
 
-// ── NAV ──
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// NAV & MODAL
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 function showPage(pg,el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('page-'+pg).classList.add('active');el.classList.add('active');
   if(pg==='weekly')renderWeekly();if(pg==='profile')renderProfiles();
 }
-function switchProfile(i){S.activeProfile=i;save();renderProfileSwitcher();renderDaily();}
-function renderProfileSwitcher(){
-  document.getElementById('profileSwitcher').innerHTML=S.profiles.map((p,i)=>
-    `<div class="profile-pill ${i===S.activeProfile?'active':''}" onclick="switchProfile(${i})">${p.name.split(' ')[0]}</div>`
-  ).join('');
+function openModal(id){
+  if(id==='profileModal')openProfileModal();
+  else document.getElementById(id).classList.add('open');
 }
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function ovClose(e,id){if(e.target===document.getElementById(id))closeModal(id);}
 
-// ── TOAST ──
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// TOAST & INIT
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
 
-// ── INIT ──
-function initApp(){renderProfileSwitcher();renderDaily();document.getElementById('app').style.display='block';}
+function initApp(){
+  document.getElementById('topbarName').textContent=S.profile.name;
+  renderDaily();
+  document.getElementById('app').style.display='block';
+}
 
 window.addEventListener('DOMContentLoaded',()=>{
   load();
   setTimeout(()=>{
-    document.getElementById('splash').style.opacity='0';document.getElementById('splash').style.transition='opacity 0.4s';
+    document.getElementById('splash').style.opacity='0';
+    document.getElementById('splash').style.transition='opacity 0.4s';
     setTimeout(()=>{
       document.getElementById('splash').style.display='none';
-      if(S.profiles.length===0){document.getElementById('setup').style.display='block';renderSetupForm();}
+      if(!S.profile){document.getElementById('setup').style.display='block';}
       else initApp();
     },400);
   },1800);
