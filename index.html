@@ -149,6 +149,40 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .tab-btn{flex:1;padding:9px;background:var(--bg3);color:var(--text3);border:none;font-family:'DM Sans',sans-serif;font-size:0.82rem;cursor:pointer;transition:all 0.2s;}
 .tab-btn.active{background:rgba(139,92,246,0.12);color:var(--primary);}
 
+/* WEEK STRIP */
+.week-strip-wrap{padding:14px 18px 0;}
+.week-strip-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.week-label{font-size:0.8rem;font-weight:600;color:var(--text2);}
+.week-nav-btn{width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.week-nav-btn:hover{border-color:var(--primary);color:var(--primary);}
+.week-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
+.week-day{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 4px;border-radius:var(--rs);border:1px solid var(--border);background:var(--bg2);cursor:pointer;transition:all 0.2s;position:relative;}
+.week-day:hover{border-color:var(--primary);}
+.week-day.active{background:var(--grad);border-color:transparent;}
+.week-day.today{border-color:var(--primary);}
+.week-day.has-data::after{content:'';position:absolute;bottom:4px;width:4px;height:4px;border-radius:50%;background:var(--secondary);}
+.week-day.active::after{background:rgba(255,255,255,0.7);}
+.wday-name{font-size:0.6rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text3);}
+.wday-num{font-size:0.88rem;font-weight:600;color:var(--text);}
+.week-day.active .wday-name,.week-day.active .wday-num{color:#fff;}
+
+/* ANALİTİK */
+.analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.analytics-stat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rs);padding:12px;text-align:center;box-shadow:0 1px 8px rgba(139,92,246,0.06);}
+.analytics-stat-val{font-size:1.2rem;font-weight:700;color:var(--primary);}
+.analytics-stat-lbl{font-size:0.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:3px;}
+.analytics-stat.wide{grid-column:span 2;}
+.analytics-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;box-shadow:0 1px 8px rgba(139,92,246,0.06);}
+.analytics-card-title{font-size:0.78rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:1px;}
+.analytics-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border2);}
+.analytics-row:last-child{border-bottom:none;}
+.analytics-row-label{font-size:0.82rem;color:var(--text2);}
+.analytics-row-val{font-size:0.88rem;font-weight:600;color:var(--text);}
+.goal-bar-wrap{margin:6px 0;}
+.goal-bar-top{display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text3);margin-bottom:4px;}
+.goal-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.goal-bar-fill{height:100%;border-radius:3px;background:var(--grad);transition:width 0.6s;}
+
 /* TOAST */
 .toast{position:fixed;top:18px;left:50%;transform:translateX(-50%) translateY(-70px);background:var(--text);color:var(--bg);border-radius:18px;padding:9px 18px;font-size:0.82rem;z-index:9999;transition:transform 0.3s;}
 .toast.show{transform:translateX(-50%) translateY(0);}
@@ -213,17 +247,13 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   <div id="page-daily" class="page active">
 
     <!-- TARİH NAV -->
-    <div class="date-nav">
-      <button class="date-nav-arrow" onclick="changeDate(-1)">‹</button>
-      <div class="date-nav-center" onclick="openDatePicker()">
-        <span class="date-cal-icon">📅</span>
-        <div>
-          <div class="date-label-main" id="dateLabelMain">Bugün</div>
-          <div class="date-label-sub" id="dateLabelSub">—</div>
-        </div>
+    <div class="week-strip-wrap">
+      <div class="week-strip-header">
+        <button class="week-nav-btn" onclick="shiftWeek(-1)">‹</button>
+        <div class="week-label" id="weekLabel">Bu Hafta</div>
+        <button class="week-nav-btn" onclick="shiftWeek(1)">›</button>
       </div>
-      <button class="date-nav-arrow" onclick="changeDate(1)">›</button>
-      <input type="date" id="datePickerInput" onchange="onDatePicked(this.value)">
+      <div class="week-strip" id="weekStrip"></div>
     </div>
 
     <!-- KALORİ ÖZET KARTI -->
@@ -303,10 +333,62 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     </div>
   </div>
 
+  <div id="page-analytics" class="page">
+    <div style="padding:18px 18px 0">
+      <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--text);margin-bottom:4px;">Haftalık Analiz</div>
+      <div style="font-size:0.78rem;color:var(--text3);margin-bottom:14px;">Son 7 günün özeti</div>
+
+      <!-- Hafta seçici -->
+      <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1px solid var(--border);border-radius:22px;padding:8px 14px;margin-bottom:14px;">
+        <button class="week-nav-btn" onclick="shiftAnalyticsWeek(-1)">‹</button>
+        <span style="font-size:0.88rem;font-weight:500;color:var(--text)" id="analyticsWeekLabel">—</span>
+        <button class="week-nav-btn" onclick="shiftAnalyticsWeek(1)">›</button>
+      </div>
+
+      <!-- Özet kartlar -->
+      <div class="analytics-grid" id="analyticsGrid"></div>
+
+      <!-- Günlük kalori bar chart -->
+      <div class="analytics-card" style="margin-bottom:12px;">
+        <div class="analytics-card-title">📈 Günlük Kalori</div>
+        <div id="analyticsBarChart" style="display:flex;align-items:flex-end;gap:6px;height:90px;margin-top:10px;"></div>
+        <div id="analyticsBarLabels" style="display:flex;gap:6px;margin-top:4px;"></div>
+      </div>
+
+      <!-- Makro özet -->
+      <div class="analytics-card" style="margin-bottom:12px;">
+        <div class="analytics-card-title">🥗 Haftalık Makro Ortalaması</div>
+        <div id="analyticsMacros" style="margin-top:10px;"></div>
+      </div>
+
+      <!-- Antrenman özeti -->
+      <div class="analytics-card" style="margin-bottom:12px;">
+        <div class="analytics-card-title">🏋️ Antrenman Özeti</div>
+        <div id="analyticsExercise" style="margin-top:10px;"></div>
+      </div>
+
+      <!-- Hedef uyumu -->
+      <div class="analytics-card" style="margin-bottom:24px;">
+        <div class="analytics-card-title">🎯 Hedef Uyumu</div>
+        <div id="analyticsGoal" style="margin-top:10px;"></div>
+      </div>
+    </div>
+  </div>
+
   <div class="bottom-nav">
-    <div class="nav-item active" onclick="showPage('daily',this)"><div class="nav-label">Günlük</div></div>
+    <div class="nav-item active" onclick="showPage('daily',this)">
+      <span style="font-size:1.1rem">📋</span>
+      <div class="nav-label">Günlük</div>
+    </div>
+    <div class="nav-item" onclick="showPage('analytics',this);renderAnalytics()">
+      <span style="font-size:1.1rem">📊</span>
+      <div class="nav-label">Analiz</div>
+    </div>
   </div>
 </div>
+
+<!-- hidden date picker -->
+<input type="date" id="datePickerInput" onchange="onDatePicked(this.value)" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0;">
 
 <!-- ANTRENMAN MODAL -->
 <div class="modal-overlay" id="exerciseModal" onclick="ovClose(event,'exerciseModal')">
@@ -557,10 +639,66 @@ function getLog(d){
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// TARİH
+// TARİH & WEEK STRIP
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 const TR_MONTHS=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+const TR_DAYS_SHORT=['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'];
 const TR_DAYS=['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+
+// weekOffset: 0 = bu hafta, -1 = geçen hafta, ...
+let weekOffset=0;
+
+function getWeekDates(offset){
+  const today=new Date();
+  // Haftanın başı: Pazartesi
+  const dow=today.getDay(); // 0=Paz
+  const diffToMon=dow===0?-6:1-dow;
+  const mon=new Date(today);
+  mon.setDate(today.getDate()+diffToMon+(offset*7));
+  return Array.from({length:7},(_,i)=>{
+    const d=new Date(mon);
+    d.setDate(mon.getDate()+i);
+    return d.toISOString().split('T')[0];
+  });
+}
+
+function renderWeekStrip(){
+  const dates=getWeekDates(weekOffset);
+  const today=new Date().toISOString().split('T')[0];
+  const strip=document.getElementById('weekStrip');
+  const lbl=document.getElementById('weekLabel');
+  if(!strip)return;
+
+  // Hafta etiketi
+  const first=new Date(dates[0]+'T12:00:00');
+  const last=new Date(dates[6]+'T12:00:00');
+  if(weekOffset===0)lbl.textContent='Bu Hafta';
+  else if(weekOffset===-1)lbl.textContent='Geçen Hafta';
+  else lbl.textContent=`${first.getDate()} ${TR_MONTHS[first.getMonth()]} – ${last.getDate()} ${TR_MONTHS[last.getMonth()]}`;
+
+  strip.innerHTML='';
+  dates.forEach(dateStr=>{
+    const d=new Date(dateStr+'T12:00:00');
+    const log=S.logs[dateStr];
+    const hasData=log&&Object.values(log.meals||{}).flat().length>0;
+    const isToday=dateStr===today;
+    const isActive=dateStr===curDate;
+
+    const el=document.createElement('div');
+    el.className='week-day'+(isActive?' active':'')+(isToday&&!isActive?' today':'')+(hasData?' has-data':'');
+    el.innerHTML=`<span class="wday-name">${TR_DAYS_SHORT[d.getDay()]}</span><span class="wday-num">${d.getDate()}</span>`;
+    el.onclick=()=>{curDate=dateStr;renderWeekStrip();renderDaily();};
+    strip.appendChild(el);
+  });
+}
+
+function shiftWeek(dir){
+  weekOffset+=dir;
+  // Seçili tarih hafta dışındaysa haftanın ilk gününe git
+  const dates=getWeekDates(weekOffset);
+  if(!dates.includes(curDate))curDate=dates[0];
+  renderWeekStrip();renderDaily();
+}
 
 function formatDate(dateStr){
   const today=new Date().toISOString().split('T')[0];
@@ -572,13 +710,6 @@ function formatDate(dateStr){
   return{main:`${day} ${month}`,sub:weekday};
 }
 
-function changeDate(dir){
-  const d=new Date(curDate+'T12:00:00');
-  d.setDate(d.getDate()+dir);
-  curDate=d.toISOString().split('T')[0];
-  renderDaily();
-}
-
 function openDatePicker(){
   const inp=document.getElementById('datePickerInput');
   inp.value=curDate;
@@ -586,7 +717,23 @@ function openDatePicker(){
 }
 
 function onDatePicked(val){
-  if(val){curDate=val;renderDaily();}
+  if(!val)return;
+  curDate=val;
+  // Seçilen tarihin haftasına git
+  const today=new Date();
+  const selDate=new Date(val+'T12:00:00');
+  const diffDays=Math.round((selDate-today)/86400000);
+  weekOffset=Math.floor(diffDays/7+(selDate.getDay()===0?0:0));
+  // Doğru weekOffset hesapla
+  const dow=today.getDay();
+  const diffToMon=dow===0?-6:1-dow;
+  const thisMonday=new Date(today);thisMonday.setDate(today.getDate()+diffToMon);
+  const selMonday=new Date(selDate);
+  const sdow=selDate.getDay();
+  const sdiffToMon=sdow===0?-6:1-sdow;
+  selMonday.setDate(selDate.getDate()+sdiffToMon);
+  weekOffset=Math.round((selMonday-thisMonday)/(7*86400000));
+  renderWeekStrip();renderDaily();
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -604,10 +751,8 @@ function renderDaily(){
   // Egzersiz kalorisi
   const totExercise=(l.exercises||[]).reduce((s,e)=>s+e.kcal,0);
 
-  // Tarih
-  const {main,sub}=formatDate(curDate);
-  document.getElementById('dateLabelMain').textContent=main;
-  document.getElementById('dateLabelSub').textContent=sub;
+  // Tarih — week strip güncelle
+  renderWeekStrip();
 
   // Ring (alınan / hedef)
   const pct=Math.min(totKcal/goal,1);
@@ -1105,6 +1250,159 @@ function showPage(id,el){
   document.getElementById('page-'+id).classList.add('active');
   el.classList.add('active');
 }
+function initApp(){
+  document.getElementById('app').style.display='block';
+  document.getElementById('topbarName').textContent=S.profile.name;
+  renderWeekStrip();
+  renderDaily();
+}
+function showPage(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  el.classList.add('active');
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ANALİZ
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let analyticsWeekOffset=0;
+
+function shiftAnalyticsWeek(dir){
+  analyticsWeekOffset+=dir;
+  renderAnalytics();
+}
+
+function renderAnalytics(){
+  const p=S.profile;
+  if(!p)return;
+  const {goal,deficit}=calcTDEE(p);
+  const dates=getWeekDates(analyticsWeekOffset);
+  const today=new Date().toISOString().split('T')[0];
+
+  // Hafta etiketi
+  const first=new Date(dates[0]+'T12:00:00');
+  const last=new Date(dates[6]+'T12:00:00');
+  let wlabel;
+  if(analyticsWeekOffset===0)wlabel='Bu Hafta';
+  else if(analyticsWeekOffset===-1)wlabel='Geçen Hafta';
+  else wlabel=`${first.getDate()} ${TR_MONTHS[first.getMonth()]} – ${last.getDate()} ${TR_MONTHS[last.getMonth()]}`;
+  document.getElementById('analyticsWeekLabel').textContent=wlabel;
+
+  // Veri topla
+  let totalKcal=0,totalProt=0,totalCarb=0,totalFat=0,totalExercise=0;
+  let loggedDays=0,goalMetDays=0,exerciseDays=0;
+  let maxKcal=0,maxKcalDay='';
+  const dailyKcals=[];
+
+  dates.forEach(d=>{
+    const l=S.logs[d];
+    const dayKcal=l?Object.values(l.meals||{}).flat().reduce((s,e)=>s+e.kcal,0):0;
+    const dayEx=l?(l.exercises||[]).reduce((s,e)=>s+e.kcal,0):0;
+    const dayProt=l?Object.values(l.meals||{}).flat().reduce((s,e)=>s+(e.prot||0),0):0;
+    const dayCarb=l?Object.values(l.meals||{}).flat().reduce((s,e)=>s+(e.carb||0),0):0;
+    const dayFat=l?Object.values(l.meals||{}).flat().reduce((s,e)=>s+(e.fat||0),0):0;
+
+    dailyKcals.push({date:d,kcal:dayKcal,ex:dayEx});
+    if(dayKcal>0){
+      loggedDays++;
+      totalKcal+=dayKcal; totalProt+=dayProt; totalCarb+=dayCarb; totalFat+=dayFat;
+      if(dayKcal>maxKcal){maxKcal=dayKcal;maxKcalDay=d;}
+      // Hedef uyumu: alınan <= hedef + 100 tolerans
+      if(dayKcal<=goal+100)goalMetDays++;
+    }
+    if(dayEx>0){exerciseDays++;totalExercise+=dayEx;}
+  });
+
+  const avgKcal=loggedDays>0?Math.round(totalKcal/loggedDays):0;
+  const avgProt=loggedDays>0?Math.round(totalProt/loggedDays):0;
+  const avgCarb=loggedDays>0?Math.round(totalCarb/loggedDays):0;
+  const avgFat=loggedDays>0?Math.round(totalFat/loggedDays):0;
+  const estimatedLoss=loggedDays>0?((totalKcal<goal*loggedDays)?(goal*loggedDays-totalKcal)/7700:0).toFixed(2):'—';
+  const totalDeficit=loggedDays>0?Math.max(goal*loggedDays-totalKcal,0):0;
+
+  // Özet kartlar
+  document.getElementById('analyticsGrid').innerHTML=`
+    <div class="analytics-stat">
+      <div class="analytics-stat-val">${totalKcal>0?Math.round(totalKcal).toLocaleString('tr'):'-'}</div>
+      <div class="analytics-stat-lbl">Toplam Kalori</div>
+    </div>
+    <div class="analytics-stat">
+      <div class="analytics-stat-val">${avgKcal>0?avgKcal:'-'}</div>
+      <div class="analytics-stat-lbl">Günlük Ort.</div>
+    </div>
+    <div class="analytics-stat">
+      <div class="analytics-stat-val">${loggedDays}/7</div>
+      <div class="analytics-stat-lbl">Kayıtlı Gün</div>
+    </div>
+    <div class="analytics-stat">
+      <div class="analytics-stat-val" style="color:var(--green)">${goalMetDays}</div>
+      <div class="analytics-stat-lbl">Hedefe Uyulan</div>
+    </div>
+    <div class="analytics-stat wide">
+      <div class="analytics-stat-val" style="color:var(--green);font-size:1rem">~${typeof estimatedLoss==='string'?estimatedLoss:estimatedLoss} kg tahmini kayıp</div>
+      <div class="analytics-stat-lbl">Bu haftanın kalori açığına göre</div>
+    </div>`;
+
+  // Bar chart
+  const maxVal=Math.max(...dailyKcals.map(d=>d.kcal),goal,1);
+  const barChart=document.getElementById('analyticsBarChart');
+  const barLabels=document.getElementById('analyticsBarLabels');
+  barChart.innerHTML=''; barLabels.innerHTML='';
+
+  dailyKcals.forEach(({date,kcal})=>{
+    const d=new Date(date+'T12:00:00');
+    const pct=kcal>0?Math.max((kcal/maxVal)*100,4):0;
+    const isToday=date===today;
+    const isGoalMet=kcal>0&&kcal<=goal+100;
+    const barColor=kcal===0?'var(--bg3)':isGoalMet?'var(--grad)':'linear-gradient(var(--red),#f87171)';
+
+    const col=document.createElement('div');
+    col.style.cssText='flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;';
+    col.innerHTML=`
+      <div style="font-size:0.55rem;color:var(--text3);margin-bottom:2px">${kcal>0?Math.round(kcal):''}</div>
+      <div style="width:100%;height:${pct}%;background:${barColor};border-radius:4px 4px 0 0;min-height:${kcal>0?4:0}px;${isToday?'box-shadow:0 0 8px rgba(139,92,246,0.4)':''}"></div>`;
+    barChart.appendChild(col);
+
+    const lbl=document.createElement('div');
+    lbl.style.cssText=`flex:1;text-align:center;font-size:0.6rem;color:${isToday?'var(--primary)':'var(--text3)'};font-weight:${isToday?'700':'400'}`;
+    lbl.textContent=TR_DAYS_SHORT[d.getDay()];
+    barLabels.appendChild(lbl);
+  });
+
+  // Hedef çizgisi
+  const goalPct=(goal/maxVal)*100;
+  barChart.style.position='relative';
+
+  // Makrolar
+  document.getElementById('analyticsMacros').innerHTML=`
+    <div class="analytics-row"><span class="analytics-row-label">Protein Ort.</span><span class="analytics-row-val" style="color:var(--primary)">${avgProt}g/gün</span></div>
+    <div class="analytics-row"><span class="analytics-row-label">Karb Ort.</span><span class="analytics-row-val" style="color:var(--secondary)">${avgCarb}g/gün</span></div>
+    <div class="analytics-row"><span class="analytics-row-label">Yağ Ort.</span><span class="analytics-row-val" style="color:var(--accent)">${avgFat}g/gün</span></div>
+    <div class="analytics-row"><span class="analytics-row-label">Toplam Protein</span><span class="analytics-row-val">${Math.round(totalProt)}g</span></div>`;
+
+  // Antrenman
+  document.getElementById('analyticsExercise').innerHTML=`
+    <div class="analytics-row"><span class="analytics-row-label">Antrenman Günü</span><span class="analytics-row-val" style="color:var(--primary)">${exerciseDays}/7 gün</span></div>
+    <div class="analytics-row"><span class="analytics-row-label">Toplam Yakılan</span><span class="analytics-row-val" style="color:var(--green)">${totalExercise} kcal</span></div>
+    <div class="analytics-row"><span class="analytics-row-label">Günlük Ort. Yakılan</span><span class="analytics-row-val">${exerciseDays>0?Math.round(totalExercise/exerciseDays):0} kcal</span></div>`;
+
+  // Hedef uyumu
+  const uyumPct=loggedDays>0?Math.round((goalMetDays/loggedDays)*100):0;
+  const deficitPct=totalKcal>0?Math.min(Math.round((totalDeficit/(deficit*7))*100),100):0;
+  document.getElementById('analyticsGoal').innerHTML=`
+    <div class="goal-bar-wrap">
+      <div class="goal-bar-top"><span>Hedef Uyumu</span><span>${uyumPct}%</span></div>
+      <div class="goal-bar"><div class="goal-bar-fill" style="width:${uyumPct}%"></div></div>
+    </div>
+    <div class="goal-bar-wrap">
+      <div class="goal-bar-top"><span>Açık Hedefi Karşılama</span><span>${deficitPct}%</span></div>
+      <div class="goal-bar"><div class="goal-bar-fill" style="width:${deficitPct}%;background:linear-gradient(135deg,var(--green),#4ade80)"></div></div>
+    </div>
+    <div class="analytics-row" style="margin-top:8px"><span class="analytics-row-label">Toplam Kalori Açığı</span><span class="analytics-row-val" style="color:var(--green)">${Math.round(totalDeficit)} kcal</span></div>
+    <div class="analytics-row"><span class="analytics-row-label">En Yüksek Kalori</span><span class="analytics-row-val">${maxKcal>0?maxKcal+' kcal ('+new Date(maxKcalDay+'T12:00:00').getDate()+' '+TR_MONTHS[new Date(maxKcalDay+'T12:00:00').getMonth()]+')':'—'}</span></div>`;
+}
+
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 function ovClose(e,id){if(e.target.id===id)closeModal(id);}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
