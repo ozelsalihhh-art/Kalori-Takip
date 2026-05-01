@@ -240,7 +240,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     <div><div class="topbar-title">Nouva</div><div class="topbar-name" id="topbarName">—</div></div>
     <div style="display:flex;gap:7px;">
       <button class="topbar-btn" onclick="openProfileModal()" title="Profili Düzenle">⚙️</button>
-      <button class="topbar-btn" onclick="resetKey()" title="API Key">🔑</button>
     </div>
   </div>
 
@@ -462,6 +461,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     <div class="edit-modal-btns">
       <button class="btn-secondary" onclick="closeModal('profileModal')">İptal</button>
       <button class="btn-primary" style="flex:1" onclick="saveProfile()">Kaydet</button>
+    </div>
+    <div style="margin-top:10px;text-align:center;">
+      <button onclick="resetKey()" style="background:none;border:none;color:var(--text3);font-size:0.75rem;font-family:'DM Sans',sans-serif;cursor:pointer;text-decoration:underline;">🔑 API Anahtarını Değiştir</button>
     </div>
   </div>
 </div>
