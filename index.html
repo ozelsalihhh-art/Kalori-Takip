@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nouva — Sağlıklı Yaşam</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f0ff;--bg2:#ffffff;--bg3:#ede6ff;--bg4:#e0d6f7;
+  --primary:#8b5cf6;--secondary:#c084fc;--accent:#7fb8e8;
+  --green:#16a34a;--red:#dc2626;--orange:#ea580c;
+  --text:#2d1f52;--text2:#6b5b8e;--text3:#9d8fc0;
+  --border:rgba(139,92,246,0.2);--border2:rgba(139,92,246,0.1);
+  --r:16px;--rs:10px;
+  --grad:linear-gradient(135deg,var(--primary),var(--secondary));
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;max-width:430px;margin:0 auto;overflow-x:hidden;}
+
+/* SPLASH */
+#splash{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;}
+#splash h1{font-family:'Playfair Display',serif;font-size:2.8rem;font-weight:400;letter-spacing:4px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+#splash p{color:var(--text3);font-size:0.85rem;letter-spacing:2px;text-transform:uppercase;}
+.splash-ring{width:80px;height:80px;border-radius:50%;border:2px solid transparent;border-top-color:var(--primary);border-right-color:var(--secondary);animation:spin 1s linear infinite;margin-bottom:8px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* SETUP */
+#setup{position:fixed;inset:0;z-index:999;background:var(--bg);overflow-y:auto;padding:28px 20px 48px;display:none;}
+.setup-logo{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:400;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center;margin-bottom:4px;}
+.setup-sub{color:var(--text3);font-size:0.8rem;text-align:center;margin-bottom:28px;}
+.form-group{margin-bottom:13px;}
+.form-group label{display:block;font-size:0.74rem;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
+.form-group input,.form-group select{width:100%;padding:11px 13px;border-radius:var(--rs);border:1px solid var(--border);background:var(--bg2);color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.93rem;outline:none;transition:border-color 0.2s;}
+.form-group input:focus,.form-group select:focus{border-color:var(--primary);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.gender-btns{display:flex;gap:8px;}
+.gender-btn{flex:1;padding:10px;border-radius:var(--rs);border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-family:'DM Sans',sans-serif;font-size:0.88rem;cursor:pointer;transition:all 0.2s;text-align:center;}
+.gender-btn.active{border-color:var(--primary);color:var(--primary);background:rgba(139,92,246,0.1);}
+.tdee-preview{background:rgba(139,92,246,0.05);border:1px solid rgba(139,92,246,0.2);border-radius:var(--rs);padding:13px;margin:14px 0;font-size:0.83rem;color:var(--text2);line-height:1.6;display:none;}
+.tdee-preview strong{color:var(--primary);}
+.btn-primary{width:100%;padding:14px;border-radius:var(--r);border:none;background:var(--grad);color:#fff;font-family:'DM Sans',sans-serif;font-size:0.98rem;font-weight:600;cursor:pointer;transition:opacity 0.2s;margin-top:4px;box-shadow:0 4px 15px rgba(139,92,246,0.3);}
+.btn-primary:active{opacity:0.85;}
+
+/* SETUP STATS PREVIEW */
+.setup-stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0;}
+.setup-stat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rs);padding:11px 12px;text-align:center;}
+.setup-stat-val{font-size:1.05rem;font-weight:600;color:var(--primary);}
+.setup-stat-lbl{font-size:0.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:3px;}
+.setup-stat.highlight{border-color:rgba(139,92,246,0.4);background:rgba(139,92,246,0.08);}
+
+/* APP */
+#app{display:none;padding-bottom:80px;}
+.topbar{padding:18px 18px 0;display:flex;align-items:center;justify-content:space-between;}
+.topbar-title{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:400;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.topbar-name{font-size:0.78rem;color:var(--text3);margin-top:1px;}
+.topbar-btn{width:30px;height:30px;border-radius:50%;border:1px solid var(--border2);background:var(--bg3);color:var(--text3);font-size:0.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+
+/* DATE NAV */
+.date-nav{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 0;gap:10px;}
+.date-nav-arrow{width:34px;height:34px;border-radius:50%;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color 0.2s,color 0.2s;}
+.date-nav-arrow:hover{border-color:var(--primary);color:var(--primary);}
+.date-nav-center{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;background:var(--bg3);border:1px solid var(--border2);border-radius:22px;padding:8px 14px;transition:border-color 0.2s;}
+.date-nav-center:hover{border-color:var(--primary);}
+.date-label-main{font-size:0.92rem;font-weight:500;color:var(--text);}
+.date-label-sub{font-size:0.72rem;color:var(--text3);}
+.date-cal-icon{font-size:0.85rem;color:var(--text3);}
+#datePickerInput{position:absolute;opacity:0;pointer-events:none;width:0;height:0;}
+
+/* KALORİ ÖZET KARTI */
+.calorie-summary{margin:12px 18px 0;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;box-shadow:0 2px 16px rgba(139,92,246,0.08);}
+.cal-summary-top{display:flex;align-items:center;gap:16px;margin-bottom:12px;}
+.ring-wrap{position:relative;width:100px;height:100px;flex-shrink:0;}
+.ring-wrap svg{transform:rotate(-90deg);}
+.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.ring-kcal{font-size:1.3rem;font-weight:600;line-height:1;}
+.ring-label{font-size:0.56rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+.cal-summary-info{flex:1;}
+.csi-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.csi-label{font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;}
+.csi-val{font-size:0.88rem;font-weight:500;}
+.deficit-positive{color:var(--green);}
+.deficit-negative{color:var(--red);}
+.cal-summary-bottom{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding-top:12px;border-top:1px solid var(--border2);}
+.macro-pill{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:8px 6px;text-align:center;}
+.macro-pill .mv{font-size:0.9rem;font-weight:600;}
+.macro-pill .ml{font-size:0.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+.macro-pill .mb{height:3px;background:var(--bg4);border-radius:2px;margin-top:5px;overflow:hidden;}
+.macro-pill .mf{height:100%;border-radius:2px;transition:width 0.5s;}
+
+/* MEALS */
+.meals-section{padding:12px 18px 0;}
+.section-title{font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:9px;display:block;}
+.meal-group{margin-bottom:9px;}
+.meal-group-header{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs) var(--rs) 0 0;}
+.meal-group-name{font-size:0.88rem;font-weight:600;color:var(--text);}
+.meal-group-kcal{font-size:0.76rem;color:var(--primary);}
+.meal-items{background:var(--bg2);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--rs) var(--rs);overflow:hidden;}
+.meal-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--border2);}
+.meal-item-name{flex:1;font-size:0.84rem;color:var(--text);}
+.meal-item-kcal{font-size:0.78rem;color:var(--text2);min-width:52px;text-align:right;}
+.meal-item-btns{display:flex;gap:4px;flex-shrink:0;}
+.item-btn{width:24px;height:24px;border-radius:50%;border:1px solid var(--border);background:var(--bg3);color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.7rem;transition:all 0.15s;}
+.item-btn:hover{border-color:var(--primary);color:var(--primary);}
+.item-btn.del:hover{border-color:var(--red);color:var(--red);}
+.meal-add-row{padding:8px 12px;display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--text3);font-size:0.76rem;background:var(--bg2);border:1px solid var(--border);border-top:1px dashed var(--border);justify-content:center;transition:color 0.2s;}
+.meal-add-row:hover{color:var(--primary);}
+
+/* NAV */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(245,240,255,0.96);backdrop-filter:blur(12px);border-top:1px solid var(--border2);display:flex;padding:10px 0 16px;z-index:100;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;}
+.nav-item.active .nav-label{color:var(--primary);}
+.nav-label{font-size:0.58rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;}
+.page{display:none;}.page.active{display:block;}
+
+/* MODALS */
+.modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.78);backdrop-filter:blur(5px);display:none;align-items:flex-end;}
+.modal-overlay.open{display:flex;}
+.modal{width:100%;max-width:430px;margin:0 auto;background:var(--bg2);border-radius:22px 22px 0 0;padding:18px;max-height:90vh;overflow-y:auto;box-shadow:0 -8px 40px rgba(139,92,246,0.12);}
+.modal-title{font-size:1rem;font-weight:500;margin-bottom:14px;color:var(--text);}
+.ai-prompt-area{width:100%;min-height:80px;padding:12px;border-radius:var(--rs);border:1px solid var(--border);background:var(--bg3);color:var(--text);margin-bottom:10px;resize:none;outline:none;font-family:'DM Sans',sans-serif;}
+.ai-prompt-area:focus{border-color:var(--primary);}
+.ai-loading{display:none;flex-direction:column;align-items:center;padding:20px;gap:10px;}
+.ai-loading.show{display:flex;}
+.ai-spinner{width:30px;height:30px;border-radius:50%;border:2px solid transparent;border-top-color:var(--primary);animation:spin 1s linear infinite;}
+
+/* DÜZENLEME MODAL */
+.edit-field-group{margin-bottom:12px;}
+.edit-field-group label{display:block;font-size:0.72rem;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
+.edit-field-group input{width:100%;padding:10px 12px;border-radius:var(--rs);border:1px solid var(--border);background:var(--bg3);color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.93rem;outline:none;}
+.edit-field-group input:focus{border-color:var(--primary);}
+.edit-modal-btns{display:flex;gap:8px;margin-top:4px;}
+.btn-secondary{flex:1;padding:12px;border-radius:var(--r);border:1px solid var(--border);background:transparent;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:0.9rem;cursor:pointer;}
+.btn-danger{flex:1;padding:12px;border-radius:var(--r);border:none;background:rgba(220,38,38,0.1);color:var(--red);font-family:'DM Sans',sans-serif;font-size:0.9rem;cursor:pointer;}
+
+/* FAVORİLER */
+.fav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--border2);cursor:pointer;transition:background 0.15s;}
+.fav-item:hover{background:rgba(139,92,246,0.06);}
+.fav-item:last-child{border-bottom:none;}
+.fav-item-info{flex:1;}
+.fav-item-name{font-size:0.88rem;color:var(--text);}
+.fav-item-meta{font-size:0.72rem;color:var(--text3);margin-top:2px;}
+.fav-item-kcal{font-size:0.85rem;color:var(--primary);font-weight:500;min-width:58px;text-align:right;}
+.fav-empty{text-align:center;padding:24px 0;color:var(--text3);font-size:0.84rem;}
+.fav-search{width:100%;padding:9px 12px;border-radius:var(--rs);border:1px solid var(--border);background:var(--bg2);color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.9rem;outline:none;margin-bottom:10px;}
+.fav-search:focus{border-color:var(--primary);}
+.fav-list-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rs);overflow:hidden;max-height:340px;overflow-y:auto;}
+.tab-btns{display:flex;gap:0;margin-bottom:14px;border-radius:var(--rs);overflow:hidden;border:1px solid var(--border);}
+.tab-btn{flex:1;padding:9px;background:var(--bg3);color:var(--text3);border:none;font-family:'DM Sans',sans-serif;font-size:0.82rem;cursor:pointer;transition:all 0.2s;}
+.tab-btn.active{background:rgba(139,92,246,0.12);color:var(--primary);}
+
+/* WEEK STRIP */
+.week-strip-wrap{padding:14px 18px 0;}
+.week-strip-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.week-label{font-size:0.8rem;font-weight:600;color:var(--text2);}
+.week-nav-btn{width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.week-nav-btn:hover{border-color:var(--primary);color:var(--primary);}
+.week-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
+.week-day{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 4px;border-radius:var(--rs);border:1px solid var(--border);background:var(--bg2);cursor:pointer;transition:all 0.2s;position:relative;}
+.week-day:hover{border-color:var(--primary);}
+.week-day.active{background:var(--grad);border-color:transparent;}
+.week-day.today{border-color:var(--primary);}
+.week-day.has-data::after{content:'';position:absolute;bottom:4px;width:4px;height:4px;border-radius:50%;background:var(--secondary);}
+.week-day.active::after{background:rgba(255,255,255,0.7);}
+.wday-name{font-size:0.6rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text3);}
+.wday-num{font-size:0.88rem;font-weight:600;color:var(--text);}
+.week-day.active .wday-name,.week-day.active .wday-num{color:#fff;}
+
+/* ANALİTİK */
+.analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.analytics-stat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rs);padding:12px;text-align:center;box-shadow:0 1px 8px rgba(139,92,246,0.06);}
+.analytics-stat-val{font-size:1.2rem;font-weight:700;color:var(--primary);}
+.analytics-stat-lbl{font-size:0.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:3px;}
+.analytics-stat.wide{grid-column:span 2;}
+.analytics-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;box-shadow:0 1px 8px rgba(139,92,246,0.06);}
+.analytics-card-title{font-size:0.78rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:1px;}
+.analytics-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border2);}
+.analytics-row:last-child{border-bottom:none;}
+.analytics-row-label{font-size:0.82rem;color:var(--text2);}
+.analytics-row-val{font-size:0.88rem;font-weight:600;color:var(--text);}
+.goal-bar-wrap{margin:6px 0;}
+.goal-bar-top{display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text3);margin-bottom:4px;}
+.goal-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.goal-bar-fill{height:100%;border-radius:3px;background:var(--grad);transition:width 0.6s;}
+
+/* TOAST */
+.toast{position:fixed;top:18px;left:50%;transform:translateX(-50%) translateY(-70px);background:var(--text);color:var(--bg);border-radius:18px;padding:9px 18px;font-size:0.82rem;z-index:9999;transition:transform 0.3s;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="splash-ring"></div>
+  <h1>Nouva</h1>
+  <p>Sağlıklı Yaşam Asistanın</p>
+</div>
+
+<!-- SETUP -->
+<div id="setup">
+  <div class="setup-logo">Nouva</div>
+  <div class="setup-sub">Profilini oluştur, başlayalım 🌸</div>
+  <div class="form-group"><label>İsim</label><input type="text" id="sName" placeholder="Adın"></div>
+  <div class="form-group"><label>Cinsiyet</label>
+    <div class="gender-btns">
+      <div class="gender-btn active" id="gM" onclick="setGender('M')">Erkek</div>
+      <div class="gender-btn" id="gF" onclick="setGender('F')">Kadın</div>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label>Yaş</label><input type="number" id="sAge" oninput="previewTDEE()"></div>
+    <div class="form-group"><label>Boy (cm)</label><input type="number" id="sHeight" oninput="previewTDEE()"></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label>Kilo (kg)</label><input type="number" id="sWeight" step="0.1" oninput="previewTDEE()"></div>
+    <div class="form-group"><label>Aktivite</label>
+      <select id="sActivity" onchange="previewTDEE()">
+        <option value="sedentary">Hareketsiz</option>
+        <option value="light" selected>Hafif Aktif</option>
+        <option value="moderate">Orta Aktif</option>
+        <option value="active">Çok Aktif</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-group">
+    <label>Hedef Kalori Açığı (kcal/gün)</label>
+    <input type="number" id="sDeficit" placeholder="500 (önerilen)" oninput="previewTDEE()">
+    <div style="font-size:0.72rem;color:var(--text3);margin-top:4px;">Boş bırakırsanız 500 kcal uygulanır. 500 kcal ≈ haftada ~0.5 kg</div>
+  </div>
+  <div class="tdee-preview" id="tdeePreview">
+    <div class="setup-stats-grid" id="setupStatsGrid" style="margin:0;"></div>
+  </div>
+  <button class="btn-primary" onclick="saveSetup()">Başla 🚀</button>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="topbar">
+    <div><div class="topbar-title">Nouva</div><div class="topbar-name" id="topbarName">—</div></div>
+    <div style="display:flex;gap:7px;">
+      <button class="topbar-btn" onclick="openProfileModal()" title="Profili Düzenle">⚙️</button>
+    </div>
+  </div>
+
+  <div id="page-daily" class="page active">
+
+    <!-- TARİH NAV -->
+    <div class="week-strip-wrap">
+      <div class="week-strip-header">
+        <button class="week-nav-btn" onclick="shiftWeek(-1)">‹</button>
+        <div class="week-label" id="weekLabel">Bu Hafta</div>
+        <button class="week-nav-btn" onclick="shiftWeek(1)">›</button>
+      </div>
+      <div class="week-strip" id="weekStrip"></div>
+    </div>
+
+    <!-- KALORİ ÖZET KARTI -->
+    <div class="calorie-summary">
+      <div class="cal-summary-top">
+        <div class="ring-wrap">
+          <svg width="100" height="100" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="9"/>
+            <circle id="ringFill" cx="50" cy="50" r="42" fill="none" stroke="url(#rg)" stroke-width="9" stroke-linecap="round" stroke-dasharray="263.9" stroke-dashoffset="263.9" style="transition:0.6s;"/>
+            <defs><linearGradient id="rg"><stop offset="0%" stop-color="#b07fe8"/><stop offset="100%" stop-color="#e87fd4"/></linearGradient></defs>
+          </svg>
+          <div class="ring-center">
+            <div class="ring-kcal" id="ringKcal">0</div>
+            <div class="ring-label">alınan</div>
+          </div>
+        </div>
+        <div class="cal-summary-info">
+          <div class="csi-row">
+            <span class="csi-label">Hedef Kalori</span>
+            <span class="csi-val" id="statGoal" style="color:var(--primary)">—</span>
+          </div>
+          <div class="csi-row">
+            <span class="csi-label">Alınan</span>
+            <span class="csi-val" id="statEaten" style="color:var(--text)">0</span>
+          </div>
+          <div class="csi-row">
+            <span class="csi-label">🏋️ Yakılan</span>
+            <span class="csi-val" id="statExercise" style="color:var(--text3)">—</span>
+          </div>
+          <div class="csi-row">
+            <span class="csi-label">Kalan</span>
+            <span class="csi-val" id="statRemaining">—</span>
+          </div>
+          <div class="csi-row">
+            <span class="csi-label">Gerçek Açık</span>
+            <span class="csi-val" id="statDeficit">—</span>
+          </div>
+          <div class="csi-row">
+            <span class="csi-label">Hedef Açık</span>
+            <span class="csi-val" id="statTargetDeficit" style="color:var(--text3)">—</span>
+          </div>
+          <div class="csi-row" style="margin-bottom:0">
+            <span class="csi-label">BMR</span>
+            <span class="csi-val" id="statBMR" style="color:var(--text3)">—</span>
+          </div>
+        </div>
+      </div>
+      <div class="cal-summary-bottom">
+        <div class="macro-pill">
+          <div class="mv" id="macroP" style="color:var(--primary)">0g</div>
+          <div class="ml">Protein</div>
+          <div class="mb"><div class="mf" id="barP" style="background:var(--primary);width:0%"></div></div>
+        </div>
+        <div class="macro-pill">
+          <div class="mv" id="macroC" style="color:var(--secondary)">0g</div>
+          <div class="ml">Karb</div>
+          <div class="mb"><div class="mf" id="barC" style="background:var(--secondary);width:0%"></div></div>
+        </div>
+        <div class="macro-pill">
+          <div class="mv" id="macroF" style="color:var(--accent)">0g</div>
+          <div class="ml">Yağ</div>
+          <div class="mb"><div class="mf" id="barF" style="background:var(--accent);width:0%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="meals-section">
+      <span class="section-title">Öğünler</span>
+      <div id="mealGroups"></div>
+    </div>
+
+    <!-- SPOR BÖLÜMÜ -->
+    <div class="meals-section" style="padding-top:4px;">
+      <span class="section-title">Antrenman</span>
+      <div id="exerciseList"></div>
+      <div class="meal-add-row" style="border-radius:var(--rs);border:1px solid var(--border2);margin-top:0;" onclick="openExerciseModal()">🏋️ Antrenman Ekle</div>
+    </div>
+  </div>
+
+  <div id="page-analytics" class="page">
+    <div style="padding:18px 18px 0">
+      <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--text);margin-bottom:4px;">Haftalık Analiz</div>
+      <div style="font-size:0.78rem;color:var(--text3);margin-bottom:14px;">Son 7 günün özeti</div>
+
+      <!-- Hafta seçici -->
+      <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1px solid var(--border);border-radius:22px;padding:8px 14px;margin-bottom:14px;">
+        <button class="week-nav-btn" onclick="shiftAnalyticsWeek(-1)">‹</button>
+        <span style="font-size:0.88rem;font-weight:500;color:var(--text)" id="analyticsWeekLabel">—</span>
+        <button class="week-nav-btn" onclick="shiftAnalyticsWeek(1)">›</button>
+      </div>
+
+      <!-- Özet kartlar -->
+      <div class="analytics-grid" id="analyticsGrid"></div>
+
+      <!-- Günlük kalori bar chart -->
+      <div class="analytics-card" style="margin-bottom:12px;">
+        <div class="analytics-card-title">📈 Günlük Kalori</div>
+        <div id="analyticsBarChart" style="display:flex;align-items:flex-end;gap:6px;height:90px;margin-top:10px;"></div>
+        <div id="analyticsBarLabels" style="display:flex;gap:6px;margin-top:4px;"></div>
+      </div>
+
+      <!-- Makro özet -->
+      <div class="analytics-card" style="margin-bottom:12px;">
+        <div class="analytics-card-title">🥗 Haftalık Makro Ortalaması</div>
+        <div id="analyticsMacros" style="margin-top:10px;"></div>
+      </div>
+
+      <!-- Antrenman özeti -->
+      <div class="analytics-card" style="margin-bottom:12px;">
+        <div class="analytics-card-title">🏋️ Antrenman Özeti</div>
+        <div id="analyticsExercise" style="margin-top:10px;"></div>
+      </div>
+
+      <!-- Hedef uyumu -->
+      <div class="analytics-card" style="margin-bottom:24px;">
+        <div class="analytics-card-title">🎯 Hedef Uyumu</div>
+        <div id="analyticsGoal" style="margin-top:10px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="showPage('daily',this)">
+      <span style="font-size:1.1rem">📋</span>
+      <div class="nav-label">Günlük</div>
+    </div>
+    <div class="nav-item" onclick="showPage('analytics',this);renderAnalytics()">
+      <span style="font-size:1.1rem">📊</span>
+      <div class="nav-label">Analiz</div>
+    </div>
+  </div>
+</div>
+
+<!-- hidden date picker -->
+<input type="date" id="datePickerInput" onchange="onDatePicked(this.value)" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0;">
+
+<!-- ANTRENMAN MODAL -->
+<div class="modal-overlay" id="exerciseModal" onclick="ovClose(event,'exerciseModal')">
+  <div class="modal">
+    <div class="modal-title">🏋️ Antrenman Ekle</div>
+    <div class="edit-field-group">
+      <label>Antrenman Açıklaması</label>
+      <input type="text" id="exDesc" placeholder="örn: Göğüs + Omuz, Bacak günü, Kardiyo 30dk">
+    </div>
+    <div class="edit-field-group">
+      <label>Yakılan Kalori (kcal)</label>
+      <input type="number" id="exKcal" placeholder="örn: 350">
+    </div>
+    <div class="edit-modal-btns">
+      <button class="btn-secondary" onclick="closeModal('exerciseModal')">İptal</button>
+      <button class="btn-primary" style="flex:1" onclick="saveExercise()">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<!-- ANTRENMAN DÜZENLE MODAL -->
+<div class="modal-overlay" id="editExModal" onclick="ovClose(event,'editExModal')">
+  <div class="modal">
+    <div class="modal-title">✏️ Antrenmanı Düzenle</div>
+    <div class="edit-field-group">
+      <label>Antrenman Açıklaması</label>
+      <input type="text" id="editExDesc" placeholder="Açıklama">
+    </div>
+    <div class="edit-field-group">
+      <label>Yakılan Kalori (kcal)</label>
+      <input type="number" id="editExKcal" placeholder="0">
+    </div>
+    <div class="edit-modal-btns">
+      <button class="btn-secondary" onclick="closeModal('editExModal')">İptal</button>
+      <button class="btn-primary" style="flex:1" onclick="saveExerciseEdit()">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<!-- PROFİL DÜZENLEME MODAL -->
+<div class="modal-overlay" id="profileModal" onclick="ovClose(event,'profileModal')">
+  <div class="modal">
+    <div class="modal-title">⚙️ Profili Düzenle</div>
+    <div class="edit-field-group"><label>İsim</label><input type="text" id="pName"></div>
+    <div class="edit-field-group"><label>Cinsiyet</label>
+      <div class="gender-btns">
+        <div class="gender-btn" id="pgM" onclick="setPGender('M')">Erkek</div>
+        <div class="gender-btn" id="pgF" onclick="setPGender('F')">Kadın</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="edit-field-group"><label>Yaş</label><input type="number" id="pAge" oninput="previewProfileTDEE()"></div>
+      <div class="edit-field-group"><label>Boy (cm)</label><input type="number" id="pHeight" oninput="previewProfileTDEE()"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="edit-field-group"><label>Kilo (kg)</label><input type="number" id="pWeight" step="0.1" oninput="previewProfileTDEE()"></div>
+      <div class="edit-field-group"><label>Aktivite</label>
+        <select id="pActivity" onchange="previewProfileTDEE()" style="width:100%;padding:10px 12px;border-radius:var(--rs);border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.93rem;outline:none;">
+          <option value="sedentary">Hareketsiz</option>
+          <option value="light">Hafif Aktif</option>
+          <option value="moderate">Orta Aktif</option>
+          <option value="active">Çok Aktif</option>
+        </select>
+      </div>
+    </div>
+    <div class="edit-field-group">
+      <label>Hedef Kalori Açığı (kcal/gün)</label>
+      <input type="number" id="pDeficit" placeholder="500" oninput="previewProfileTDEE()">
+      <div id="profileTDEEHint" style="font-size:0.75rem;color:var(--text3);margin-top:5px;line-height:1.5;"></div>
+    </div>
+    <div class="edit-modal-btns">
+      <button class="btn-secondary" onclick="closeModal('profileModal')">İptal</button>
+      <button class="btn-primary" style="flex:1" onclick="saveProfile()">Kaydet</button>
+    </div>
+    <div style="margin-top:10px;text-align:center;">
+      <button onclick="resetKey()" style="background:none;border:none;color:var(--text3);font-size:0.75rem;font-family:'DM Sans',sans-serif;cursor:pointer;text-decoration:underline;">🔑 API Anahtarını Değiştir</button>
+    </div>
+  </div>
+</div>
+
+<!-- AI MODAL -->
+<div class="modal-overlay" id="aiModal" onclick="ovClose(event,'aiModal')">
+  <div class="modal">
+    <div class="modal-title" id="aiModalTitle">✨ AI ile Yemek Ekle</div>
+    <textarea class="ai-prompt-area" id="aiPrompt" placeholder="Ne yedin? (örn: 2 yumurta, 1 dilim tam buğday ekmeği)"></textarea>
+    <div class="ai-loading" id="aiLoading">
+      <div class="ai-spinner"></div>
+      <div style="font-size:0.82rem;color:var(--text3);">Analiz ediliyor...</div>
+    </div>
+    <div id="aiResultWrap"></div>
+    <div id="aiActionBtns">
+      <button class="btn-primary" onclick="runSmartAI()">✨ Analiz Et</button>
+      <button class="btn-secondary" onclick="closeModal('aiModal')" style="width:100%;margin-top:8px;">İptal</button>
+    </div>
+  </div>
+</div>
+
+<!-- FAVORİLERDEN EKLE MODAL -->
+<div class="modal-overlay" id="favModal" onclick="ovClose(event,'favModal')">
+  <div class="modal">
+    <div class="modal-title">⭐ Favorilerden Ekle</div>
+    <div class="tab-btns">
+      <button class="tab-btn active" id="tabPickBtn" onclick="switchFavTab('pick')">Seç & Ekle</button>
+      <button class="tab-btn" id="tabManageBtn" onclick="switchFavTab('manage')">Düzenle / Sil</button>
+      <button class="tab-btn" id="tabAddBtn" onclick="switchFavTab('add')">+ Manuel Ekle</button>
+    </div>
+
+    <!-- SEÇ TAB -->
+    <div id="favTabPick">
+      <input class="fav-search" id="favSearch" placeholder="🔍 Favori ara..." oninput="renderFavList()">
+      <div class="fav-list-wrap" id="favPickList"></div>
+    </div>
+
+    <!-- DÜZENLE TAB -->
+    <div id="favTabManage" style="display:none;">
+      <div class="fav-list-wrap" id="favManageList"></div>
+    </div>
+
+    <!-- MANUEL EKLE TAB -->
+    <div id="favTabAdd" style="display:none;">
+      <div class="edit-field-group"><label>Favori Adı</label><input type="text" id="favAddName" placeholder="örn: Sabah kahvaltım"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="edit-field-group"><label>Kalori (kcal)</label><input type="number" id="favAddKcal" placeholder="0"></div>
+        <div class="edit-field-group"><label>Protein (g)</label><input type="number" id="favAddProt" placeholder="0"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="edit-field-group"><label>Karb (g)</label><input type="number" id="favAddCarb" placeholder="0"></div>
+        <div class="edit-field-group"><label>Yağ (g)</label><input type="number" id="favAddFat" placeholder="0"></div>
+      </div>
+      <button class="btn-primary" onclick="saveFavManual()">⭐ Favorilere Kaydet</button>
+    </div>
+
+    <button class="btn-secondary" onclick="closeModal('favModal')" style="width:100%;margin-top:10px;">Kapat</button>
+  </div>
+</div>
+
+<!-- FAVORİ DÜZENLE MODAL -->
+<div class="modal-overlay" id="editFavModal" onclick="ovClose(event,'editFavModal')">
+  <div class="modal">
+    <div class="modal-title">✏️ Favoriyi Düzenle</div>
+    <div class="edit-field-group"><label>Favori Adı</label><input type="text" id="editFavName"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="edit-field-group"><label>Kalori (kcal)</label><input type="number" id="editFavKcal"></div>
+      <div class="edit-field-group"><label>Protein (g)</label><input type="number" id="editFavProt"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="edit-field-group"><label>Karb (g)</label><input type="number" id="editFavCarb"></div>
+      <div class="edit-field-group"><label>Yağ (g)</label><input type="number" id="editFavFat"></div>
+    </div>
+    <div class="edit-modal-btns">
+      <button class="btn-secondary" onclick="closeModal('editFavModal')">İptal</button>
+      <button class="btn-primary" style="flex:1" onclick="saveEditFav()">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<!-- DÜZENLEME MODAL -->
+<div class="modal-overlay" id="editModal" onclick="ovClose(event,'editModal')">
+  <div class="modal">
+    <div class="modal-title">✏️ Yemeği Düzenle</div>
+    <div class="edit-field-group">
+      <label>Yemek Adı</label>
+      <input type="text" id="editName" placeholder="Yemek adı">
+    </div>
+    <div class="edit-field-group">
+      <label>Kalori (kcal)</label>
+      <input type="number" id="editKcal" placeholder="0">
+    </div>
+    <div class="edit-field-group">
+      <label>Protein (g)</label>
+      <input type="number" id="editProt" placeholder="0">
+    </div>
+    <div class="edit-field-group">
+      <label>Karbonhidrat (g)</label>
+      <input type="number" id="editCarb" placeholder="0">
+    </div>
+    <div class="edit-field-group">
+      <label>Yağ (g)</label>
+      <input type="number" id="editFat" placeholder="0">
+    </div>
+    <div class="edit-modal-btns">
+      <button class="btn-secondary" onclick="closeModal('editModal')">İptal</button>
+      <button class="btn-primary" style="flex:1" onclick="saveEdit()">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// API KEY
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let GEMINI_KEY = localStorage.getItem('nt_key');
+function checkKey(){
+  if(!GEMINI_KEY||GEMINI_KEY.length<10){
+    GEMINI_KEY=prompt("Gemini API anahtarınızı girin:\n(Sadece tarayıcınızda saklanır)");
+    if(GEMINI_KEY)localStorage.setItem('nt_key',GEMINI_KEY);
+  }
+}
+function resetKey(){localStorage.removeItem('nt_key');location.reload();}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// CONFIG & STATE
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const MEALS=[{key:'k',label:'☀️ Kahvaltı'},{key:'o',label:'🥗 Öğle'},{key:'a',label:'🌙 Akşam'},{key:'s',label:'🍎 Ara'}];
+
+let S={profile:null,logs:{},weights:[],history:[]};
+let curDate=new Date().toISOString().split('T')[0];
+let addingToMeal=null, aiResultData=null, setupGender='M', profileGender='M';
+let editTarget={meal:null,index:null};
+let editExIdx=null;
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// CORE
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function load(){
+  let raw=localStorage.getItem('nt_v8')||localStorage.getItem('nt_v7');
+  if(raw){
+    try{
+      S=JSON.parse(raw);
+      if(!S.logs)S.logs={};
+      if(!S.weights)S.weights=[];
+      if(!S.history)S.history=[];
+      if(S.profile&&S.profile.targetDeficit==null)S.profile.targetDeficit=500;
+      Object.keys(S.logs).forEach(d=>{
+        if(!S.logs[d].exercises)S.logs[d].exercises=[];
+        if(S.logs[d].drinks)delete S.logs[d].drinks;
+        if(!S.logs[d].meals)S.logs[d].meals={k:[],o:[],a:[],s:[]};
+        ['k','o','a','s'].forEach(k=>{if(!S.logs[d].meals[k])S.logs[d].meals[k]=[];});
+      });
+    }catch(e){
+      S={profile:null,logs:{},weights:[],history:[]};
+    }
+  }
+}
+function save(){localStorage.setItem('nt_v8',JSON.stringify(S));}
+
+function calcTDEE(p,deficitOverride){
+  const bmr=p.gender==='M'?10*p.weight+6.25*p.height-5*p.age+5:10*p.weight+6.25*p.height-5*p.age-161;
+  const m={sedentary:1.2,light:1.375,moderate:1.55,active:1.725}[p.activity]||1.375;
+  const tdee=Math.round(bmr*m);
+  const deficit=deficitOverride!=null?deficitOverride:(p.targetDeficit!=null?p.targetDeficit:500);
+  const goal=Math.max(tdee-deficit,1200);
+  return{bmr:Math.round(bmr),tdee,goal,deficit};
+}
+
+function getLog(d){
+  if(!S.logs[d])S.logs[d]={meals:{k:[],o:[],a:[],s:[]},exercises:[]};
+  return S.logs[d];
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// TARİH & WEEK STRIP
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const TR_MONTHS=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+const TR_DAYS_SHORT=['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'];
+const TR_DAYS=['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+
+// weekOffset: 0 = bu hafta, -1 = geçen hafta, ...
+let weekOffset=0;
+
+function getWeekDates(offset){
+  const today=new Date();
+  // Haftanın başı: Pazartesi
+  const dow=today.getDay(); // 0=Paz
+  const diffToMon=dow===0?-6:1-dow;
+  const mon=new Date(today);
+  mon.setDate(today.getDate()+diffToMon+(offset*7));
+  return Array.from({length:7},(_,i)=>{
+    const d=new Date(mon);
+    d.setDate(mon.getDate()+i);
+    return d.toISOString().split('T')[0];
+  });
+}
+
+function renderWeekStrip(){
+  const dates=getWeekDates(weekOffset);
+  const today=new Date().toISOString().split('T')[0];
+  const strip=document.getElementById('weekStrip');
+  const lbl=document.getElementById('weekLabel');
+  if(!strip)return;
+
+  // Hafta etiketi
+  const first=new Date(dates[0]+'T12:00:00');
+  const last=new Date(dates[6]+'T12:00:00');
+  if(weekOffset===0)lbl.textContent='Bu Hafta';
+  else if(weekOffset===-1)lbl.textContent='Geçen Hafta';
+  else lbl.textContent=`${first.getDate()} ${TR_MONTHS[first.getMonth()]} – ${last.getDate()} ${TR_MONTHS[last.getMonth()]}`;
+
+  strip.innerHTML='';
+  dates.forEach(dateStr=>{
+    const d=new Date(dateStr+'T12:00:00');
+    const log=S.logs[dateStr];
+    const hasData=log&&Object.values(log.meals||{}).flat().length>0;
+    const isToday=dateStr===today;
+    const isActive=dateStr===curDate;
+
+    const el=document.createElement('div');
+    el.className='week-day'+(isActive?' active':'')+(isToday&&!isActive?' today':'')+(hasData?' has-data':'');
+    el.innerHTML=`<span class="wday-name">${TR_DAYS_SHORT[d.getDay()]}</span><span class="wday-num">${d.getDate()}</span>`;
+    el.onclick=()=>{curDate=dateStr;renderWeekStrip();renderDaily();};
+    strip.appendChild(el);
+  });
+}
+
+function shiftWeek(dir){
+  weekOffset+=dir;
+  // Seçili tarih hafta dışındaysa haftanın ilk gününe git
+  const dates=getWeekDates(weekOffset);
+  if(!dates.includes(curDate))curDate=dates[0];
+  renderWeekStrip();renderDaily();
+}
+
+function formatDate(dateStr){
+  const today=new Date().toISOString().split('T')[0];
+  const yesterday=new Date(Date.now()-86400000).toISOString().split('T')[0];
+  const d=new Date(dateStr+'T12:00:00');
+  const day=d.getDate(), month=TR_MONTHS[d.getMonth()], weekday=TR_DAYS[d.getDay()];
+  if(dateStr===today)return{main:'Bugün',sub:`${day} ${month} · ${weekday}`};
+  if(dateStr===yesterday)return{main:'Dün',sub:`${day} ${month} · ${weekday}`};
+  return{main:`${day} ${month}`,sub:weekday};
+}
+
+function openDatePicker(){
+  const inp=document.getElementById('datePickerInput');
+  inp.value=curDate;
+  inp.showPicker ? inp.showPicker() : inp.click();
+}
+
+function onDatePicked(val){
+  if(!val)return;
+  curDate=val;
+  // Seçilen tarihin haftasına git
+  const today=new Date();
+  const selDate=new Date(val+'T12:00:00');
+  const diffDays=Math.round((selDate-today)/86400000);
+  weekOffset=Math.floor(diffDays/7+(selDate.getDay()===0?0:0));
+  // Doğru weekOffset hesapla
+  const dow=today.getDay();
+  const diffToMon=dow===0?-6:1-dow;
+  const thisMonday=new Date(today);thisMonday.setDate(today.getDate()+diffToMon);
+  const selMonday=new Date(selDate);
+  const sdow=selDate.getDay();
+  const sdiffToMon=sdow===0?-6:1-sdow;
+  selMonday.setDate(selDate.getDate()+sdiffToMon);
+  weekOffset=Math.round((selMonday-thisMonday)/(7*86400000));
+  renderWeekStrip();renderDaily();
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// RENDER
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function renderDaily(){
+  const p=S.profile;
+  if(!p) return; // profil henüz oluşturulmadı
+  const {bmr,tdee,goal,deficit}=calcTDEE(p);
+  const l=getLog(curDate);
+
+  let totKcal=0,totP=0,totC=0,totF=0;
+  Object.values(l.meals).flat().forEach(e=>{totKcal+=e.kcal;totP+=e.prot||0;totC+=e.carb||0;totF+=e.fat||0;});
+
+  // Egzersiz kalorisi
+  const totExercise=(l.exercises||[]).reduce((s,e)=>s+e.kcal,0);
+
+  // Tarih — week strip güncelle
+  renderWeekStrip();
+
+  // Ring (alınan / hedef)
+  const pct=Math.min(totKcal/goal,1);
+  const circ=263.9;
+  document.getElementById('ringFill').style.strokeDashoffset=circ-(pct*circ);
+  document.getElementById('ringKcal').textContent=Math.round(totKcal);
+
+  // Kalori özet
+  // Kalan = hedef - alınan + yakılan (egzersiz)
+  const remaining=goal-Math.round(totKcal)+totExercise;
+  const actualDeficit=Math.round(totKcal)-goal-totExercise; // pozitif = fazla yendi
+
+  document.getElementById('statGoal').textContent=goal+' kcal';
+  document.getElementById('statEaten').textContent=Math.round(totKcal)+' kcal';
+  document.getElementById('statBMR').textContent=bmr+' kcal';
+  document.getElementById('statTargetDeficit').textContent=deficit+' kcal';
+
+  const remEl=document.getElementById('statRemaining');
+  remEl.textContent=remaining+' kcal';
+  remEl.className='csi-val '+(remaining>=0?'deficit-positive':'deficit-negative');
+
+  const defEl=document.getElementById('statDeficit');
+  if(actualDeficit>0){
+    defEl.textContent='+'+actualDeficit+' kcal fazla';
+    defEl.className='csi-val deficit-negative';
+  } else {
+    defEl.textContent=Math.abs(actualDeficit)+' kcal açık';
+    defEl.className='csi-val deficit-positive';
+  }
+
+  // Egzersiz satırı
+  const exEl=document.getElementById('statExercise');
+  if(totExercise>0){
+    exEl.textContent='+'+totExercise+' kcal 🔥';
+    exEl.className='csi-val deficit-positive';
+  } else {
+    exEl.textContent='—';
+    exEl.className='csi-val';
+    exEl.style.color='var(--text3)';
+  }
+
+  // Makrolar
+  const pGoal=Math.round(goal*0.30/4), cGoal=Math.round(goal*0.45/4), fGoal=Math.round(goal*0.25/9);
+  document.getElementById('macroP').textContent=Math.round(totP)+'g';
+  document.getElementById('macroC').textContent=Math.round(totC)+'g';
+  document.getElementById('macroF').textContent=Math.round(totF)+'g';
+  document.getElementById('barP').style.width=Math.min(totP/pGoal*100,100)+'%';
+  document.getElementById('barC').style.width=Math.min(totC/cGoal*100,100)+'%';
+  document.getElementById('barF').style.width=Math.min(totF/fGoal*100,100)+'%';
+
+  renderMeals(l);
+  renderExercises(l);
+}
+
+function renderMeals(l){
+  const mg=document.getElementById('mealGroups'); mg.innerHTML='';
+  MEALS.forEach(m=>{
+    const items=l.meals[m.key]||[];
+    const mKcal=items.reduce((s,e)=>s+e.kcal,0);
+    const div=document.createElement('div'); div.className='meal-group';
+
+    const itemsHTML=items.map((e,i)=>`
+      <div class="meal-item">
+        <span class="meal-item-name">${e.name}</span>
+        <span class="meal-item-kcal">${Math.round(e.kcal)} kcal</span>
+        <div class="meal-item-btns">
+          <button class="item-btn" onclick="openEditModal('${m.key}',${i})" title="Düzenle">✏️</button>
+          <button class="item-btn del" onclick="deleteMealItem('${m.key}',${i})" title="Sil">🗑️</button>
+        </div>
+      </div>`).join('');
+
+    div.innerHTML=`
+      <div class="meal-group-header">
+        <span class="meal-group-name">${m.label}</span>
+        <span class="meal-group-kcal">${Math.round(mKcal)} kcal</span>
+      </div>
+      <div class="meal-items">
+        ${itemsHTML}
+        <div style="display:flex;border-top:1px dashed var(--border2);">
+          <div class="meal-add-row" style="flex:1;border:none;border-right:1px dashed var(--border2);" onclick="openAIModal('${m.key}')">✨ AI ile Ekle</div>
+          <div class="meal-add-row" style="flex:1;border:none;" onclick="openFavModal('${m.key}')">⭐ Favorilerden</div>
+        </div>
+      </div>`;
+    mg.appendChild(div);
+  });
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// DÜZENLEME & SİLME
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function deleteMealItem(mealKey,idx){
+  const l=getLog(curDate);
+  l.meals[mealKey].splice(idx,1);
+  save(); renderDaily(); toast("🗑️ Silindi");
+}
+
+function openEditModal(mealKey,idx){
+  const l=getLog(curDate);
+  const item=l.meals[mealKey][idx];
+  editTarget={meal:mealKey,index:idx};
+  document.getElementById('editName').value=item.name||'';
+  document.getElementById('editKcal').value=item.kcal||0;
+  document.getElementById('editProt').value=item.prot||0;
+  document.getElementById('editCarb').value=item.carb||0;
+  document.getElementById('editFat').value=item.fat||0;
+  document.getElementById('editModal').classList.add('open');
+}
+
+function saveEdit(){
+  const l=getLog(curDate);
+  const item=l.meals[editTarget.meal][editTarget.index];
+  item.name=document.getElementById('editName').value||item.name;
+  item.kcal=parseFloat(document.getElementById('editKcal').value)||0;
+  item.prot=parseFloat(document.getElementById('editProt').value)||0;
+  item.carb=parseFloat(document.getElementById('editCarb').value)||0;
+  item.fat=parseFloat(document.getElementById('editFat').value)||0;
+  save(); closeModal('editModal'); renderDaily(); toast("✅ Güncellendi");
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// AI
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function openAIModal(mk){
+  addingToMeal=mk; aiResultData=null;
+  document.getElementById('aiPrompt').value='';
+  document.getElementById('aiResultWrap').innerHTML='';
+  document.getElementById('aiActionBtns').style.display='block';
+  const mLabel=MEALS.find(m=>m.key===mk)?.label||'';
+  document.getElementById('aiModalTitle').textContent=`✨ AI ile Ekle — ${mLabel}`;
+  document.getElementById('aiModal').classList.add('open');
+}
+
+async function runSmartAI(){
+  const prompt=document.getElementById('aiPrompt').value.trim();
+  const status=document.getElementById('aiLoading');
+  const resultWrap=document.getElementById('aiResultWrap');
+  if(!prompt)return toast("⚠️ Ne yediğini yazmalısın.");
+  status.classList.add('show');
+  document.getElementById('aiActionBtns').style.display='none';
+  try{
+    const listRes=await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${GEMINI_KEY}`);
+    const listData=await listRes.json();
+    if(listData.error)throw new Error(listData.error.message);
+    const model=listData.models.find(m=>m.supportedGenerationMethods.includes("generateContent")&&m.name.includes("flash"))||listData.models[0];
+    const genRes=await fetch(`https://generativelanguage.googleapis.com/v1beta/${model.name}:generateContent?key=${GEMINI_KEY}`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({contents:[{parts:[{text:`Diyetisyen ol. Sadece JSON döndür, başka hiçbir şey yazma: {"items":[{"name":"yemek adı","kcal":100,"prot":10,"carb":10,"fat":5}],"total_kcal":100}. Kullanıcı: ${prompt}`}]}]})
+    });
+    const genData=await genRes.json();
+    let text=genData.candidates[0].content.parts[0].text.replace(/```json|```/g,"").trim();
+    aiResultData=JSON.parse(text);
+    resultWrap.innerHTML=`
+      <div style="background:var(--bg3);padding:14px;border-radius:var(--rs);margin-top:10px;border:1px solid rgba(201,168,76,0.3);">
+        <div style="font-size:1.15rem;color:var(--primary);font-weight:600;margin-bottom:4px;">${aiResultData.total_kcal} kcal</div>
+        ${aiResultData.items.map(i=>`<div style="font-size:0.82rem;color:var(--text2);padding:2px 0;">${i.name} — P:${i.prot}g K:${i.carb}g Y:${i.fat}g</div>`).join('')}
+        <button class="btn-primary" onclick="confirmAI(false)" style="margin-top:12px;">Onayla ve Ekle ✓</button>
+        <button class="btn-primary" onclick="confirmAI(true)" style="margin-top:7px;background:linear-gradient(135deg,#9060c8,#b07fe8);">⭐ Ekle ve Favorilere Kaydet</button>
+        <button class="btn-secondary" onclick="resetAI()" style="width:100%;margin-top:7px;">Tekrar Yaz</button>
+      </div>`;
+  }catch(e){
+    toast("❌ Hata: "+e.message);
+    document.getElementById('aiActionBtns').style.display='block';
+  }finally{status.classList.remove('show');}
+}
+
+function resetAI(){
+  document.getElementById('aiResultWrap').innerHTML='';
+  document.getElementById('aiActionBtns').style.display='block';
+  aiResultData=null;
+}
+
+function confirmAI(saveToFav=false){
+  const l=getLog(curDate);
+  aiResultData.items.forEach(i=>l.meals[addingToMeal].push(i));
+  if(saveToFav){
+    // Tüm itemları tek favori olarak kaydet (öğün adıyla)
+    const mLabel=MEALS.find(m=>m.key===addingToMeal)?.label||'Yemek';
+    const favName=aiResultData.items.map(i=>i.name).join(', ');
+    const favEntry={
+      id:Date.now(),
+      name:favName,
+      items:aiResultData.items,
+      total_kcal:aiResultData.total_kcal,
+      total_prot:aiResultData.items.reduce((s,i)=>s+(i.prot||0),0),
+      total_carb:aiResultData.items.reduce((s,i)=>s+(i.carb||0),0),
+      total_fat:aiResultData.items.reduce((s,i)=>s+(i.fat||0),0),
+    };
+    if(!S.favorites)S.favorites=[];
+    S.favorites.push(favEntry);
+    toast("⭐ Favorilere kaydedildi!");
+  } else {
+    toast("✅ Başarıyla eklendi");
+  }
+  save(); closeModal('aiModal'); renderDaily();
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ANTRENMAN
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function renderExercises(l){
+  const list=document.getElementById('exerciseList'); list.innerHTML='';
+  const exs=l.exercises||[];
+  if(exs.length===0)return;
+  const wrap=document.createElement('div');
+  wrap.style.cssText='background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rs);overflow:hidden;margin-bottom:8px;';
+  exs.forEach((e,i)=>{
+    const row=document.createElement('div');
+    row.className='meal-item';
+    row.innerHTML=`
+      <span class="meal-item-name">${e.desc}</span>
+      <span class="meal-item-kcal" style="color:var(--green)">-${e.kcal} kcal</span>
+      <div class="meal-item-btns">
+        <button class="item-btn" onclick="openEditExModal(${i})" title="Düzenle">✏️</button>
+        <button class="item-btn del" onclick="deleteExercise(${i})" title="Sil">🗑️</button>
+      </div>`;
+    wrap.appendChild(row);
+  });
+  list.appendChild(wrap);
+}
+
+function openExerciseModal(){
+  document.getElementById('exDesc').value='';
+  document.getElementById('exKcal').value='';
+  document.getElementById('exerciseModal').classList.add('open');
+}
+
+function saveExercise(){
+  const desc=document.getElementById('exDesc').value.trim();
+  const kcal=parseInt(document.getElementById('exKcal').value)||0;
+  if(!desc)return toast("⚠️ Antrenman açıklaması gerekli.");
+  if(!kcal)return toast("⚠️ Kalori değeri gir.");
+  const l=getLog(curDate);
+  if(!l.exercises)l.exercises=[];
+  l.exercises.push({desc,kcal});
+  save(); closeModal('exerciseModal'); renderDaily(); toast("💪 Antrenman eklendi");
+}
+
+function deleteExercise(idx){
+  const l=getLog(curDate);
+  l.exercises.splice(idx,1);
+  save(); renderDaily(); toast("🗑️ Silindi");
+}
+
+function openEditExModal(idx){
+  const l=getLog(curDate);
+  const e=l.exercises[idx];
+  editExIdx=idx;
+  document.getElementById('editExDesc').value=e.desc;
+  document.getElementById('editExKcal').value=e.kcal;
+  document.getElementById('editExModal').classList.add('open');
+}
+
+function saveExerciseEdit(){
+  const l=getLog(curDate);
+  l.exercises[editExIdx].desc=document.getElementById('editExDesc').value||l.exercises[editExIdx].desc;
+  l.exercises[editExIdx].kcal=parseInt(document.getElementById('editExKcal').value)||0;
+  save(); closeModal('editExModal'); renderDaily(); toast("✅ Güncellendi");
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// PROFİL DÜZENLEME
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function openProfileModal(){
+  const p=S.profile;
+  profileGender=p.gender||'M';
+  document.getElementById('pName').value=p.name||'';
+  document.getElementById('pAge').value=p.age||'';
+  document.getElementById('pHeight').value=p.height||'';
+  document.getElementById('pWeight').value=p.weight||'';
+  document.getElementById('pActivity').value=p.activity||'light';
+  document.getElementById('pDeficit').value=p.targetDeficit!=null?p.targetDeficit:500;
+  document.getElementById('pgM').classList.toggle('active',profileGender==='M');
+  document.getElementById('pgF').classList.toggle('active',profileGender==='F');
+  previewProfileTDEE();
+  document.getElementById('profileModal').classList.add('open');
+}
+
+function setPGender(g){
+  profileGender=g;
+  document.getElementById('pgM').classList.toggle('active',g==='M');
+  document.getElementById('pgF').classList.toggle('active',g==='F');
+  previewProfileTDEE();
+}
+
+function previewProfileTDEE(){
+  const age=+document.getElementById('pAge').value;
+  const h=+document.getElementById('pHeight').value;
+  const w=+document.getElementById('pWeight').value;
+  const defVal=parseInt(document.getElementById('pDeficit').value)||500;
+  const hint=document.getElementById('profileTDEEHint');
+  if(age&&h&&w){
+    const {tdee,goal}=calcTDEE({age,height:h,weight:w,gender:profileGender,activity:document.getElementById('pActivity').value},defVal);
+    const weeklyLoss=((defVal*7)/7700).toFixed(2);
+    hint.innerHTML=`TDEE: <strong style="color:var(--text2)">${tdee} kcal</strong> → Hedef: <strong style="color:var(--gold)">${goal} kcal</strong> · Haftada ~${weeklyLoss} kg`;
+  } else {
+    hint.innerHTML='';
+  }
+}
+
+function saveProfile(){
+  const name=document.getElementById('pName').value;
+  const age=+document.getElementById('pAge').value;
+  const h=+document.getElementById('pHeight').value;
+  const w=+document.getElementById('pWeight').value;
+  if(!name||!age||!h||!w)return toast("⚠️ Bilgileri eksiksiz girin.");
+  const defVal=parseInt(document.getElementById('pDeficit').value)||500;
+  S.profile={...S.profile,name,age,height:h,weight:w,gender:profileGender,activity:document.getElementById('pActivity').value,targetDeficit:defVal};
+  save(); closeModal('profileModal');
+  document.getElementById('topbarName').textContent=name;
+  renderDaily(); toast("✅ Profil güncellendi");
+}
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// FAVORİLER
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let favTargetMeal=null, editFavId=null;
+
+function openFavModal(mk){
+  favTargetMeal=mk;
+  switchFavTab('pick');
+  document.getElementById('favSearch').value='';
+  document.getElementById('favModal').classList.add('open');
+  renderFavList();
+}
+
+function switchFavTab(tab){
+  ['pick','manage','add'].forEach(t=>{
+    document.getElementById('favTab'+t.charAt(0).toUpperCase()+t.slice(1)).style.display=t===tab?'block':'none';
+    document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)+'Btn').classList.toggle('active',t===tab);
+  });
+  if(tab==='manage')renderFavManageList();
+}
+
+function renderFavList(){
+  const wrap=document.getElementById('favPickList');
+  const q=(document.getElementById('favSearch').value||'').toLowerCase();
+  const favs=(S.favorites||[]).filter(f=>f.name.toLowerCase().includes(q));
+  if(favs.length===0){
+    wrap.innerHTML=`<div class="fav-empty">${q?'Eşleşen favori yok':'Henüz favori eklenmedi<br><span style="font-size:0.75rem">AI ile analiz et ve ⭐ ile kaydet</span>'}</div>`;
+    return;
+  }
+  wrap.innerHTML='';
+  favs.forEach(f=>{
+    const el=document.createElement('div');
+    el.className='fav-item';
+    el.innerHTML=`
+      <div class="fav-item-info">
+        <div class="fav-item-name">${f.name}</div>
+        <div class="fav-item-meta">P:${Math.round(f.total_prot||0)}g · K:${Math.round(f.total_carb||0)}g · Y:${Math.round(f.total_fat||0)}g</div>
+      </div>
+      <div class="fav-item-kcal">${Math.round(f.total_kcal)} kcal</div>`;
+    el.onclick=()=>addFavToMeal(f);
+    wrap.appendChild(el);
+  });
+}
+
+function addFavToMeal(fav){
+  const l=getLog(curDate);
+  fav.items.forEach(i=>l.meals[favTargetMeal].push({...i}));
+  save(); closeModal('favModal'); renderDaily();
+  toast(`⭐ ${fav.name} eklendi`);
+}
+
+function renderFavManageList(){
+  const wrap=document.getElementById('favManageList');
+  const favs=S.favorites||[];
+  if(favs.length===0){
+    wrap.innerHTML='<div class="fav-empty">Henüz favori yok</div>';
+    return;
+  }
+  wrap.innerHTML='';
+  favs.forEach(f=>{
+    const el=document.createElement('div');
+    el.className='fav-item';
+    el.style.cursor='default';
+    el.innerHTML=`
+      <div class="fav-item-info">
+        <div class="fav-item-name">${f.name}</div>
+        <div class="fav-item-meta">${Math.round(f.total_kcal)} kcal · P:${Math.round(f.total_prot||0)}g K:${Math.round(f.total_carb||0)}g Y:${Math.round(f.total_fat||0)}g</div>
+      </div>
+      <div class="meal-item-btns">
+        <button class="item-btn" onclick="openEditFav(${f.id})" title="Düzenle">✏️</button>
+        <button class="item-btn del" onclick="deleteFav(${f.id})" title="Sil">🗑️</button>
+      </div>`;
+    wrap.appendChild(el);
+  });
+}
+
+function deleteFav(id){
+  S.favorites=(S.favorites||[]).filter(f=>f.id!==id);
+  save(); renderFavManageList(); toast("🗑️ Favori silindi");
+}
+
+function openEditFav(id){
+  const f=(S.favorites||[]).find(f=>f.id===id);
+  if(!f)return;
+  editFavId=id;
+  document.getElementById('editFavName').value=f.name;
+  document.getElementById('editFavKcal').value=Math.round(f.total_kcal);
+  document.getElementById('editFavProt').value=Math.round(f.total_prot||0);
+  document.getElementById('editFavCarb').value=Math.round(f.total_carb||0);
+  document.getElementById('editFavFat').value=Math.round(f.total_fat||0);
+  document.getElementById('editFavModal').classList.add('open');
+}
+
+function saveEditFav(){
+  const f=(S.favorites||[]).find(f=>f.id===editFavId);
+  if(!f)return;
+  const kcal=parseFloat(document.getElementById('editFavKcal').value)||0;
+  const prot=parseFloat(document.getElementById('editFavProt').value)||0;
+  const carb=parseFloat(document.getElementById('editFavCarb').value)||0;
+  const fat=parseFloat(document.getElementById('editFavFat').value)||0;
+  f.name=document.getElementById('editFavName').value||f.name;
+  f.total_kcal=kcal; f.total_prot=prot; f.total_carb=carb; f.total_fat=fat;
+  // items dizisini tek item olarak güncelle
+  f.items=[{name:f.name,kcal,prot,carb,fat}];
+  save(); closeModal('editFavModal'); renderFavManageList(); toast("✅ Favori güncellendi");
+}
+
+function saveFavManual(){
+  const name=document.getElementById('favAddName').value.trim();
+  const kcal=parseFloat(document.getElementById('favAddKcal').value)||0;
+  const prot=parseFloat(document.getElementById('favAddProt').value)||0;
+  const carb=parseFloat(document.getElementById('favAddCarb').value)||0;
+  const fat=parseFloat(document.getElementById('favAddFat').value)||0;
+  if(!name)return toast("⚠️ Favori adı gerekli");
+  if(!kcal)return toast("⚠️ Kalori değeri gir");
+  if(!S.favorites)S.favorites=[];
+  S.favorites.push({id:Date.now(),name,items:[{name,kcal,prot,carb,fat}],total_kcal:kcal,total_prot:prot,total_carb:carb,total_fat:fat});
+  save();
+  document.getElementById('favAddName').value='';
+  document.getElementById('favAddKcal').value='';
+  document.getElementById('favAddProt').value='';
+  document.getElementById('favAddCarb').value='';
+  document.getElementById('favAddFat').value='';
+  toast("⭐ Favorilere eklendi!");
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// SETUP
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function setGender(g){
+  setupGender=g;
+  document.getElementById('gM').classList.toggle('active',g==='M');
+  document.getElementById('gF').classList.toggle('active',g==='F');
+  previewTDEE();
+}
+
+function previewTDEE(){
+  const age=+document.getElementById('sAge').value;
+  const h=+document.getElementById('sHeight').value;
+  const w=+document.getElementById('sWeight').value;
+  const defVal=parseInt(document.getElementById('sDeficit').value)||500;
+  const preview=document.getElementById('tdeePreview');
+  const grid=document.getElementById('setupStatsGrid');
+  if(age&&h&&w){
+    const {bmr,tdee,goal}=calcTDEE({age,height:h,weight:w,gender:setupGender,activity:document.getElementById('sActivity').value},defVal);
+    const bmi=(w/((h/100)**2)).toFixed(1);
+    let bmiLabel='Normal';
+    if(bmi<18.5)bmiLabel='Düşük';else if(bmi>=25&&bmi<30)bmiLabel='Fazla';else if(bmi>=30)bmiLabel='Obez';
+    const weeklyLoss=((defVal*7)/7700).toFixed(2);
+    grid.innerHTML=`
+      <div class="setup-stat"><div class="setup-stat-val">${bmr}</div><div class="setup-stat-lbl">BMR (kcal)</div></div>
+      <div class="setup-stat"><div class="setup-stat-val">${tdee}</div><div class="setup-stat-lbl">TDEE (kcal)</div></div>
+      <div class="setup-stat highlight"><div class="setup-stat-val">${goal}</div><div class="setup-stat-lbl">Hedef Kalori</div></div>
+      <div class="setup-stat"><div class="setup-stat-val">${bmi}</div><div class="setup-stat-lbl">BMI · ${bmiLabel}</div></div>
+      <div class="setup-stat" style="grid-column:span 2"><div class="setup-stat-val" style="color:var(--teal)">${defVal} kcal açık → haftada ~${weeklyLoss} kg</div><div class="setup-stat-lbl">Hedef Açık & Tahmini Kayıp</div></div>`;
+    preview.style.display='block';
+  } else {
+    preview.style.display='none';
+  }
+}
+
+function saveSetup(){
+  const name=document.getElementById('sName').value;
+  const age=+document.getElementById('sAge').value;
+  const h=+document.getElementById('sHeight').value;
+  const w=+document.getElementById('sWeight').value;
+  if(!name||!age||!h||!w)return toast("⚠️ Bilgileri eksiksiz girin.");
+  const defVal=parseInt(document.getElementById('sDeficit').value)||500;
+  S.profile={name,age,height:h,weight:w,gender:setupGender,activity:document.getElementById('sActivity').value,targetDeficit:defVal};
+  save(); document.getElementById('setup').style.display='none'; initApp();
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// UI HELPERS
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function initApp(){
+  document.getElementById('app').style.display='block';
+  document.getElementById('topbarName').textContent=S.profile.name;
+  renderDaily();
+}
+function showPage(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function initApp(){
+  document.getElementById('app').style.display='block';
+  document.getElementById('topbarName').textContent=S.profile.name;
+  renderWeekStrip();
+  renderDaily();
+}
+function showPage(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  el.classList.add('active');
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ANALİZ
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let analyticsWeekOffset=0;
+
+function shiftAnalyticsWeek(dir){
+  analyticsWeekOffset+=dir;
+  renderAnalytics();
+}
+
+function renderAnalytics(){
+  const p=S.profile;
+  if(!p)return;
+  const {goal,deficit}=calcTDEE(p);
+  const dates=getWeekDates(analyticsWeekOffset);
+  const today=new Date().toISOString().split('T')[0];
+
+  // Hafta etiketi
+  const first=new Date(dates[0]+'T12:00:00');
+  const last=new Date(dates[6]+'T12:00:00');
+  let wlabel;
+  if(analyticsWeekOffset===0)wlabel='Bu Hafta';
+  else if(analyticsWeekOffset===-1)wlabel='Geçen Hafta';
+  else wlabel=`${first.getDate()} ${TR_MONTHS[first.getMonth()]} – ${last.getDate()} ${TR_MONTHS[last.getMonth()]}`;
+  document.getElementById('analyticsWeekLabel').textContent=wlabel;
+
+  // Veri topla
+  let totalKcal=0,totalProt=0,totalCarb=0,totalFat=0,totalExercise=0;
+  let loggedDays=0,goalMetDays=0,exerciseDays=0;
+  let maxKcal=0,maxKcalDay='';
+  const dailyKcals=[];
+
+  dates.forEach(d=>{
+    const l=S.logs[d];
+    const dayKcal=l?Object.values(l.meals||{}).flat().reduce((s,e)=>s+e.kcal,0):0;
+    const dayEx=l?(l.exercises||[]).reduce((s,e)=>s+e.kcal,0):0;
+    const dayProt=l?Object.values(l.meals||{}).flat().reduce((s,e)=>s+(e.prot||0),0):0;
+    const dayCarb=l?Object.values(l.meals||{}).flat().reduce((s,e)=>s+(e.carb||0),0):0;
+    const dayFat=l?Object.values(l.meals||{}).flat().reduce((s,e)=>s+(e.fat||0),0):0;
+
+    dailyKcals.push({date:d,kcal:dayKcal,ex:dayEx});
+    if(dayKcal>0){
+      loggedDays++;
+      totalKcal+=dayKcal; totalProt+=dayProt; totalCarb+=dayCarb; totalFat+=dayFat;
+      if(dayKcal>maxKcal){maxKcal=dayKcal;maxKcalDay=d;}
+      // Hedef uyumu: alınan <= hedef + 100 tolerans
+      if(dayKcal<=goal+100)goalMetDays++;
+    }
+    if(dayEx>0){exerciseDays++;totalExercise+=dayEx;}
+  });
+
+  const avgKcal=loggedDays>0?Math.round(totalKcal/loggedDays):0;
+  const avgProt=loggedDays>0?Math.round(totalProt/loggedDays):0;
+  const avgCarb=loggedDays>0?Math.round(totalCarb/loggedDays):0;
+  const avgFat=loggedDays>0?Math.round(totalFat/loggedDays):0;
+  const estimatedLoss=loggedDays>0?((totalKcal<goal*loggedDays)?(goal*loggedDays-totalKcal)/7700:0).toFixed(2):'—';
+  const totalDeficit=loggedDays>0?Math.max(goal*loggedDays-totalKcal,0):0;
+
+  // Özet kartlar
+  document.getElementById('analyticsGrid').innerHTML=`
+    <div class="analytics-stat">
+      <div class="analytics-stat-val">${totalKcal>0?Math.round(totalKcal).toLocaleString('tr'):'-'}</div>
+      <div class="analytics-stat-lbl">Toplam Kalori</div>
+    </div>
+    <div class="analytics-stat">
+      <div class="analytics-stat-val">${avgKcal>0?avgKcal:'-'}</div>
+      <div class="analytics-stat-lbl">Günlük Ort.</div>
+    </div>
+    <div class="analytics-stat">
+      <div class="analytics-stat-val">${loggedDays}/7</div>
+      <div class="analytics-stat-lbl">Kayıtlı Gün</div>
+    </div>
+    <div class="analytics-stat">
+      <div class="analytics-stat-val" style="color:var(--green)">${goalMetDays}</div>
+      <div class="analytics-stat-lbl">Hedefe Uyulan</div>
+    </div>
+    <div class="analytics-stat wide">
+      <div class="analytics-stat-val" style="color:var(--green);font-size:1rem">~${typeof estimatedLoss==='string'?estimatedLoss:estimatedLoss} kg tahmini kayıp</div>
+      <div class="analytics-stat-lbl">Bu haftanın kalori açığına göre</div>
+    </div>`;
+
+  // Bar chart
+  const maxVal=Math.max(...dailyKcals.map(d=>d.kcal),goal,1);
+  const barChart=document.getElementById('analyticsBarChart');
+  const barLabels=document.getElementById('analyticsBarLabels');
+  barChart.innerHTML=''; barLabels.innerHTML='';
+
+  dailyKcals.forEach(({date,kcal})=>{
+    const d=new Date(date+'T12:00:00');
+    const pct=kcal>0?Math.max((kcal/maxVal)*100,4):0;
+    const isToday=date===today;
+    const isGoalMet=kcal>0&&kcal<=goal+100;
+    const barColor=kcal===0?'var(--bg3)':isGoalMet?'var(--grad)':'linear-gradient(var(--red),#f87171)';
+
+    const col=document.createElement('div');
+    col.style.cssText='flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;';
+    col.innerHTML=`
+      <div style="font-size:0.55rem;color:var(--text3);margin-bottom:2px">${kcal>0?Math.round(kcal):''}</div>
+      <div style="width:100%;height:${pct}%;background:${barColor};border-radius:4px 4px 0 0;min-height:${kcal>0?4:0}px;${isToday?'box-shadow:0 0 8px rgba(139,92,246,0.4)':''}"></div>`;
+    barChart.appendChild(col);
+
+    const lbl=document.createElement('div');
+    lbl.style.cssText=`flex:1;text-align:center;font-size:0.6rem;color:${isToday?'var(--primary)':'var(--text3)'};font-weight:${isToday?'700':'400'}`;
+    lbl.textContent=TR_DAYS_SHORT[d.getDay()];
+    barLabels.appendChild(lbl);
+  });
+
+  // Hedef çizgisi
+  const goalPct=(goal/maxVal)*100;
+  barChart.style.position='relative';
+
+  // Makrolar
+  document.getElementById('analyticsMacros').innerHTML=`
+    <div class="analytics-row"><span class="analytics-row-label">Protein Ort.</span><span class="analytics-row-val" style="color:var(--primary)">${avgProt}g/gün</span></div>
+    <div class="analytics-row"><span class="analytics-row-label">Karb Ort.</span><span class="analytics-row-val" style="color:var(--secondary)">${avgCarb}g/gün</span></div>
+    <div class="analytics-row"><span class="analytics-row-label">Yağ Ort.</span><span class="analytics-row-val" style="color:var(--accent)">${avgFat}g/gün</span></div>
+    <div class="analytics-row"><span class="analytics-row-label">Toplam Protein</span><span class="analytics-row-val">${Math.round(totalProt)}g</span></div>`;
+
+  // Antrenman
+  document.getElementById('analyticsExercise').innerHTML=`
+    <div class="analytics-row"><span class="analytics-row-label">Antrenman Günü</span><span class="analytics-row-val" style="color:var(--primary)">${exerciseDays}/7 gün</span></div>
+    <div class="analytics-row"><span class="analytics-row-label">Toplam Yakılan</span><span class="analytics-row-val" style="color:var(--green)">${totalExercise} kcal</span></div>
+    <div class="analytics-row"><span class="analytics-row-label">Günlük Ort. Yakılan</span><span class="analytics-row-val">${exerciseDays>0?Math.round(totalExercise/exerciseDays):0} kcal</span></div>`;
+
+  // Hedef uyumu
+  const uyumPct=loggedDays>0?Math.round((goalMetDays/loggedDays)*100):0;
+  const deficitPct=totalKcal>0?Math.min(Math.round((totalDeficit/(deficit*7))*100),100):0;
+  document.getElementById('analyticsGoal').innerHTML=`
+    <div class="goal-bar-wrap">
+      <div class="goal-bar-top"><span>Hedef Uyumu</span><span>${uyumPct}%</span></div>
+      <div class="goal-bar"><div class="goal-bar-fill" style="width:${uyumPct}%"></div></div>
+    </div>
+    <div class="goal-bar-wrap">
+      <div class="goal-bar-top"><span>Açık Hedefi Karşılama</span><span>${deficitPct}%</span></div>
+      <div class="goal-bar"><div class="goal-bar-fill" style="width:${deficitPct}%;background:linear-gradient(135deg,var(--green),#4ade80)"></div></div>
+    </div>
+    <div class="analytics-row" style="margin-top:8px"><span class="analytics-row-label">Toplam Kalori Açığı</span><span class="analytics-row-val" style="color:var(--green)">${Math.round(totalDeficit)} kcal</span></div>
+    <div class="analytics-row"><span class="analytics-row-label">En Yüksek Kalori</span><span class="analytics-row-val">${maxKcal>0?maxKcal+' kcal ('+new Date(maxKcalDay+'T12:00:00').getDate()+' '+TR_MONTHS[new Date(maxKcalDay+'T12:00:00').getMonth()]+')':'—'}</span></div>`;
+}
+
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function ovClose(e,id){if(e.target.id===id)closeModal(id);}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+window.onload=()=>{
+  checkKey(); load();
+  setTimeout(()=>{
+    document.getElementById('splash').style.display='none';
+    if(!S.profile)document.getElementById('setup').style.display='block';
+    else initApp();
+  },1800);
+};
+</script>
+</body>
+</html>
